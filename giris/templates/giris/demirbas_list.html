@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Demirbaş Listesi</h1>
+
+    {% if demirbas_list %}
+    <ul>
+
+      {% for demirbas in demirbas_list %}
+      <li>
+        <a href="{{demirbas.id}}">{{ demirbas.id }}</a> ({{demirbas.demirbasadi}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Demirbaş kayıtlı değil....</p>
+    {% endif %}
+{% endblock %}

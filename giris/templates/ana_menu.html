@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Envanter Sistemi Ana Sayfa</h1>
+
+  <p>Sisteme hoş geldiniz...</p>
+
+<h2>İçerik bilgisi</h2>
+
+  <p>Envanter sistemindeki kayıt listesi:</p>
+  <ul>
+    <li><strong>Demirbaş:</strong> {{ num_demirbas }}</li>
+    <li><strong>Proje:</strong> {{ num_proje }}</li>
+    <li><strong>Marka:</strong> {{ num_marka }}</li>
+    <li><strong>Kategori:</strong> {{ num_kategori }}</li>
+    <li><strong>Müşteri:</strong> {{ num_musteri }}</li>
+  </ul>
+
+{% endblock %}

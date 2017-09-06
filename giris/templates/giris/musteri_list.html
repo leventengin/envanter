@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Müşteri Listesi</h1>
+
+    {% if musteri_list %}
+    <ul>
+
+      {% for musteri in musteri_list %}
+      <li>
+        <a href="{{musteri.id}}">{{ musteri.id }}</a> ({{musteri.musteri_adi}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Müşteri kayıtlı değil....</p>
+    {% endif %}
+{% endblock %}

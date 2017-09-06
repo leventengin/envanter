@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Marka Listesi</h1>
+
+    {% if marka_list %}
+    <ul>
+
+      {% for marka in marka_list %}
+      <li>
+          <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Marka kayıtlı değil....</p>
+    {% endif %}
+{% endblock %}

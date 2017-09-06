@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Kategori Listesi</h1>
+
+    {% if kategori_list %}
+    <ul>
+
+      {% for kategori in kategori_list %}
+      <li>
+        <a href="{{kategori.id}}">{{ kategori.id }}</a> ({{kategori.kategori_adi}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Kategori kayıtlı değil....</p>
+    {% endif %}
+{% endblock %}

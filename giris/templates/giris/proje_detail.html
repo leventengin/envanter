@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Proje Sayfası</h1>
+
+  <p><strong>Numarası:</strong> {{ proje.id }}</p>
+  <p><strong>Adı:</strong> {{ proje.proje_adi }}</p>
+  <p><strong>Marka:</strong> {{ proje.musteri }}</p>
+  <p><strong>Kategori:</strong> {{ proje.aciklama }}</p>
+
+{% endblock %}

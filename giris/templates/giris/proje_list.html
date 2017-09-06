@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Proje Listesi</h1>
+
+    {% if proje_list %}
+    <ul>
+
+      {% for proje in proje_list %}
+      <li>
+        <a href="{{proje.id}}">{{ proje.id }}</a> ({{proje.proje_adi}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Proje kayıtlı değil....</p>
+    {% endif %}
+{% endblock %}
