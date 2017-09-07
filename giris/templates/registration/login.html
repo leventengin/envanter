@@ -6,13 +6,15 @@
 <p>Kullanıcı adınız ve şifreniz uyuşmadı, lütfen tekrar deneyin...</p>
 {% endif %}
 
+<!--
 {% if next %}
     {% if user.is_authenticated %}
     <p>Hesabınız bu sayfaya erişmeye yetkili değil...</p>
     {% else %}
-    <p>Bu sayfayı görmek için lütfen kaydolun...</p>
+    <p>ddddd...</p>
     {% endif %}
 {% endif %}
+-->
 
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
@@ -27,7 +29,7 @@
 </div>
 
 <div>
-  <input type="submit" value="giriş" />
+  <input type="submit" value="gir" />
   <input type="hidden" name="next" value="{{ next }}" />
 </div>
 </form>

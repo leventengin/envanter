@@ -2,7 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from .models import demirbas, proje, marka, kategori, musteri
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 
+
+
+@login_required
 def index(request):
     num_demirbas=demirbas.objects.all().count()
     num_proje=proje.objects.all().count()
@@ -16,41 +22,37 @@ def index(request):
 def home(request):
     return render(request, 'ilk.html')
 
-class DemirbasListView(generic.ListView):
+class DemirbasListView(LoginRequiredMixin,generic.ListView):
     model = demirbas
     #paginate_by = 20
 
-class DemirbasDetailView(generic.DetailView):
+class DemirbasDetailView(LoginRequiredMixin,generic.DetailView):
     model = demirbas
 
-class ProjeListView(generic.ListView):
+class ProjeListView(LoginRequiredMixin,generic.ListView):
     model = proje
     #paginate_by = 20
 
-class ProjeDetailView(generic.DetailView):
+class ProjeDetailView(LoginRequiredMixin,generic.DetailView):
     model = proje
 
-class MarkaListView(generic.ListView):
+class MarkaListView(LoginRequiredMixin,generic.ListView):
     model = marka
     paginate_by = 5
 
-class MarkaDetailView(generic.DetailView):
+class MarkaDetailView(LoginRequiredMixin,generic.DetailView):
     model = marka
 
-class KategoriListView(generic.ListView):
+class KategoriListView(LoginRequiredMixin,generic.ListView):
     model = kategori
     #paginate_by = 20
 
-class KategoriDetailView(generic.DetailView):
+class KategoriDetailView(LoginRequiredMixin,generic.DetailView):
     model = kategori
 
-class MusteriListView(generic.ListView):
+class MusteriListView(LoginRequiredMixin,generic.ListView):
     model = musteri
     #paginate_by = 20
 
-class MusteriDetailView(generic.DetailView):
+class MusteriDetailView(LoginRequiredMixin,generic.DetailView):
     model = musteri
-
-def cikis(request):
-    return render(request, 'registration/logged_out.html',
-    )
