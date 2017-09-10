@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<!--  buraya if konulacak ...-->
+
+
+      <h1>Proje Sil</h1>
+
+      <p>Bu projeyi silmek istediğinizden emin misiniz: {{ proje }}?</p>
+
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" action="" value="Evet, sil.." />
+      </form>
+
+{% endblock %}

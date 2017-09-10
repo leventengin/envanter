@@ -8,12 +8,19 @@
 
       {% for marka in marka_list %}
       <li>
-          <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}})
+        <a href="{{marka.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{marka.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{marka.id}})    <a href="{{marka.id}}">{{ marka.marka_adi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
       </li>
       {% endfor %}
-
+      <p> </p>
+      <a href="/giris/marka/create"> Marka Ekle </a>
     </ul>
     {% else %}
-      <p>Marka kayıtlı değil....</p>
+      <p>Kayıtlı marka yok ....</p>
+      <p> </p>
+      <a href="/giris/marka/create"> Marka Ekle </a>
     {% endif %}
+
 {% endblock %}

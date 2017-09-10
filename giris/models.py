@@ -4,13 +4,15 @@
 from __future__ import unicode_literals
 from django.db import models
 from datetime import datetime
-from django.db import models
+from django.urls import reverse
+from django.utils.translation import gettext as _
 
 
 class marka(models.Model):
     marka_adi = models.CharField(max_length=200)
     def __str__(self):
         return(self.marka_adi)
+
 
 class kategori(models.Model):
     kategori_adi = models.CharField(max_length=200)

@@ -8,12 +8,19 @@
 
       {% for kategori in kategori_list %}
       <li>
-        <a href="{{kategori.id}}">{{ kategori.id }}</a> ({{kategori.kategori_adi}})
+        <a href="{{kategori.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{kategori.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{kategori.id}})    <a href="{{kategori.id}}">{{ kategori.kategori_adi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
       </li>
       {% endfor %}
-
+      <p> </p>
+      <a href="/giris/kategori/create"> Kategori Ekle </a>
     </ul>
     {% else %}
-      <p>Kategori kayıtlı değil....</p>
+      <p>Kayıtlı kategori yok ....</p>
+      <p> </p>
+      <a href="/giris/kategori/create"> Kategori Ekle </a>
     {% endif %}
+
 {% endblock %}

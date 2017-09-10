@@ -8,12 +8,19 @@
 
       {% for demirbas in demirbas_list %}
       <li>
-        <a href="{{demirbas.id}}">{{ demirbas.id }}</a> ({{demirbas.demirbasadi}})
+        <a href="{{marka.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{marka.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{demirbas.id}})    <a href="{{demirbas.id}}">{{ marka.demirbasadi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
       </li>
       {% endfor %}
-
+      <p> </p>
+      <a href="/giris/demirbas/create"> Demirbaş Ekle </a>
     </ul>
     {% else %}
-      <p>Demirbaş kayıtlı değil....</p>
+      <p>Kayıtlı demirbaş yok ....</p>
+      <p> </p>
+      <a href="/giris/demirbas/create"> Demirbaş Ekle </a>
     {% endif %}
+
 {% endblock %}

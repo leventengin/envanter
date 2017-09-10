@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
 
-  {% block title %}<title>Local Library</title>{% endblock %}
+  {% block title %}<title>  balance  envanter  </title>{% endblock %}
   <meta charset="utf-8">
+  {# Load the tag library #}
+  {% load bootstrap3 %}
+  {# Load CSS and JavaScript #}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  {# Display django.contrib.messages as Bootstrap alerts #}
+  {% bootstrap_messages %}
+  {% load crispy_forms_tags %}
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -12,40 +21,88 @@
   <!-- Add additional CSS in static file -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+
+
 </head>
 
 <body>
 
   <div class="container-fluid">
 
-    <div class="row">
-      <div class="col-sm-2">
-      {% block sidebar %}
-      <ul class="sidebar-nav">
-          <li><a href="{% url 'index' %}">Ana Sayfa</a></li>
-          <br></br>
-          <li><a href="/giris/demirbas">Demirbaş</a></li>
-          <li><a href="/giris/proje">Proje</a></li>
-          <li><a href="/giris/marka">Marka</a></li>
-          <li><a href="/giris/kategori">Kategori</a></li>
-          <li><a href="/giris/musteri">Müşteri</a></li>
-          <p></p>
-          <p></p>
-          {% if user.is_authenticated %}
-            <li>Kulanıcı: </li>
-            <li>{{ user.get_username }}</li>
-            <p></p>
-            <li><a href="{% url 'logout'%}?next={{request.path}}">Çıkış</a></li>
-          {% else %}
-            <li><a href="{% url 'login'%}?next={{request.path}}">Giriş</a></li>
-          {% endif %}
-      </ul>
-     {% endblock %}
-      </div>
-      <div class="col-sm-10 ">
-      {% block content %}{% endblock %}
+  <!--  <div class="row">  -->
 
-      {% block pagination %}
+
+    <div class="row">
+          {% block siderow %}
+    <!--        <ul class="ustalan-nav">  -->
+              <div class="col-md-2">
+                <ul class="ustalan-nav">
+                  <li><a href="{% url 'index' %}">Ana Sayfa </a></li>
+                </ul>
+              </div>
+
+              <div class="col-md-6">
+                    <ul class="ustalan-nav">
+                      <h5>Envanter Sistemi</h5>
+                  </ul>
+              </div>
+
+              <div class="col-md-3">
+                <ul class="ustalan-nav">
+                {% if user.is_authenticated %}
+                  <li>Kulanıcı: {{ user.get_username }}</li>
+                {% else %}
+                    <h5></h5>
+                {% endif %}
+                  </ul>
+              </div>
+
+              <div class="col-md-1">
+                  <ul class="ustalan-nav">
+                {% if user.is_authenticated %}
+                  <li><a href="{% url 'logout'%}?next={{request.path}}">Çıkış</a></li>
+                {% else %}
+                  <li><a href="{% url 'login'%}?next={{request.path}}">Giriş</a></li>
+                {% endif %}
+                  </ul>
+              </div>
+    <!--        </ul>    -->
+          {% endblock %}
+        </div>
+
+
+
+    <div class="row">
+        <div class="col-md-2">
+          {% block sidebar %}
+              <ul class="sidebar-nav">
+                <!--  <li><a href="{% url 'index' %}">Ana Sayfa</a></li>
+                  <br></br> -->
+                  <li><a href="/giris/demirbas">Demirbaş</a></li>
+                  <li><a href="/giris/proje">Proje</a></li>
+                  <li><a href="/giris/marka">Marka</a></li>
+                  <li><a href="/giris/kategori">Kategori</a></li>
+                  <li><a href="/giris/musteri">Müşteri</a></li>
+                  <p></p>
+                  <p></p>
+                <!--  {% if user.is_authenticated %}
+                    <li>Kulanıcı: </li>
+                    <li>{{ user.get_username }}</li>
+                    <p></p>
+                    <li><a href="{% url 'logout'%}?next={{request.path}}">Çıkış</a></li>
+                 {% else %}
+                    <li><a href="{% url 'login'%}?next={{request.path}}">Giriş</a></li>
+                  {% endif %} -->
+             </ul>
+          {% endblock %}
+      </div>
+
+        <div class="col-md-10 ">
+
+           {% block content %}{% endblock %}
+
+           {% block pagination %}
         {% if is_paginated %}
           <div class="pagination">
             <span class="page-links">
@@ -61,8 +118,9 @@
             </span>
           </div>
         {% endif %}
-      {% endblock %}
-      </div>
+           {% endblock %}
+        </div>
+
     </div>
 
   </div>
