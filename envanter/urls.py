@@ -18,7 +18,7 @@ from django.contrib import admin
 from giris import views
 
 urlpatterns = [
-    url(r'^$', views.home, name='home'),
+    url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^giris/', include('giris.urls')),
     #url(r'^', admin.site.urls),

@@ -47,11 +47,12 @@ INSTALLED_APPS = [
 ]
 
 
-
+from django.utils.translation import ugettext_lazy as _
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -116,9 +117,18 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('en', _('English')),
+    ('tr', _('Turkish')),
+]
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'tr-TR'
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+
+TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
 
