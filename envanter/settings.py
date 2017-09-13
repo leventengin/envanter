@@ -86,12 +86,12 @@ WSGI_APPLICATION = 'envanter.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'envanter',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '0.0.0.0',
-        'PORT': '3306'
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
