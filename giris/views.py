@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views import generic
 
 from django.contrib.auth.decorators import login_required
@@ -8,10 +7,66 @@ from django.contrib.auth.models import User
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from giris.models import marka, demirbas, kategori, proje, musteri
-from giris.forms import MarkaGirisForm
+from giris.models import marka, demirbas, kategori, proje, musteri, deneme_giris
+from giris.forms import MarkaGirisForm, DemirbasGirisForm, KategoriGirisForm, MusteriGirisForm, ProjeGirisForm
 from django.core import serializers
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
+
+from django.views.generic import FormView
+from giris.forms import DenemeForm
+
+class DenemeView(FormView):
+    template_name = "deneme.html"
+    form_class = DenemeForm
+
+from django.shortcuts import render, redirect
+
+from .forms import NameForm
+
+def get_name(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = NameForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            #return HttpResponseRedirect('/thanks/')
+            #return HttpResponse('..........................')
+            #return HttpResponse("<p>....... unutma</p>")
+
+            #data = {'name': 'Vitor', 'location': 'Finland', 'is_active': True, 'count': 28
+            #}
+            #return JsonResponse(data)
+            isim = request.POST.get('your_name', "")
+            tarih = request.POST.get('tarih', "")
+            kullanici = request.user
+            print (isim, kullanici, tarih)
+            #import pdb; pdb.set_trace()
+            kaydetme_obj = deneme_giris(yazi = isim, user = kullanici, tarih = tarih)
+            kaydetme_obj.save()
+
+            text = form.cleaned_data["your_name"]
+            form = NameForm()
+            args = {'form': form, 'text': text}
+            #return render(request, 'name.html', args)
+            return redirect('get_name')
+        else:
+            return render(request, 'name.html', {'form': form})
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = NameForm()
+        #global deneme_giris_nesne
+        deneme_giris_QS = deneme_giris.objects.all().order_by('-tarih')
+        args = {'form': form, 'deneme_giris_QS': deneme_giris_QS}
+        #import pdb; pdb.set_trace()
+        return render(request, 'name.html', args)
+
+
 
 
 
@@ -25,6 +80,9 @@ def index(request):
     return render(request, 'ana_menu.html',
         context={'num_demirbas':num_demirbas,'num_proje':num_proje,'num_marka':num_marka,'num_kategori':num_kategori, 'num_musteri':num_musteri},
     )
+
+def deneme_picker(request):
+    return render(request, 'deneme_picker.html')
 
 
 def home(request):
@@ -150,16 +208,16 @@ from django.utils.translation import gettext as _
 
 
 
-def markayenikaydet(request):
+def DemirbasAktar(request):
     if request.method == 'POST':
-        form = MarkaGirisForm(request.POST)
+        form = DemirbasAktar(request.POST)
         if  form.is_valid():
-            marka_ad_gecici = request.POST.get('marka_adi')
-            marka_obj = marka(marka_adi = marka_ad_gecici)
-            marka.save()
+            proje_ad_gecici = request.POST.get('proje_adi')
+            proje_adi = proje(proje_adi = proje_ad_gecici)
+            proje.update()
     else:
-        form = MarkaGirisForm()
-    return render(request, '/giris/addbook.html', {'form': form})
+        form = DemirbasAktar()
+    #return render(request, '/giris/addbook.html', {'form': form})
 
 
 @login_required

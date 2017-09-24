@@ -5,7 +5,16 @@ from __future__ import unicode_literals
 from django.db import models
 from datetime import datetime
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
+
+class deneme_giris(models.Model):
+    yazi = models.CharField(max_length=200)
+    user = models.ForeignKey(User)
+    tarih = models.DateField()
+    def __str__(self):
+        return(self.yazi)
+
 
 
 class marka(models.Model):
@@ -22,7 +31,7 @@ class kategori(models.Model):
 class musteri(models.Model):
     musteri_adi = models.CharField(max_length=200)
     def __str__(self):
-        return(self.muster_adi)
+        return(self.musteri_adi)
 
 
 class proje(models.Model):
@@ -55,17 +64,17 @@ class demirbas(models.Model):
     ('A', 'Aktif'),
     ('P', 'Pasif'),
     )
-    demirbasadi = models.CharField(max_length=200)
+    demirbasadi = models.CharField(_('Demirbaş Adı:'), max_length=200)
     proje = models.ForeignKey(proje)
-    bolum = models.CharField(max_length=200)
+    bolum = models.CharField(_('Bölüm'), max_length=200)
     marka = models.ForeignKey(marka)
     kategori = models.ForeignKey(kategori)
-    modeli = models.TextField()
+    modeli = models.CharField(_('Modeli'), max_length=200)
     durum = models.CharField(max_length=1, choices=DURUM)
-    garanti_bitis = models.DateField()
-    amts_kalanyil = models.PositiveIntegerField()
-    env_bedeli = models.IntegerField()
-    aciklama = models.TextField()
+    garanti_bitis = models.DateField(_('Garanti bitiş:'),)
+    amts_kalanyil = models.PositiveIntegerField(_('Kalan amts yılı:'),)
+    env_bedeli = models.IntegerField(_('Envanter Bedeli:'),)
+    aciklama = models.TextField(_('Açıklama:'))
     yetkinlik_skalasi = models.CharField(max_length=1)
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):

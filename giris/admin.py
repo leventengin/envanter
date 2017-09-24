@@ -10,8 +10,8 @@ from .models import demirbas
 
 
 
-admin.site.register(marka)
-admin.site.register(kategori)
-admin.site.register(musteri)
-admin.site.register(proje)
-admin.site.register(demirbas)
+#admin.site.register(marka)
+#admin.site.register(kategori)
+#admin.site.register(musteri)
+#admin.site.register(proje)
+#admin.site.register(demirbas)

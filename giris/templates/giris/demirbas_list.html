@@ -8,9 +8,9 @@
 
       {% for demirbas in demirbas_list %}
       <li>
-        <a href="{{marka.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
-        <a href="{{marka.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
-              &emsp;   ({{demirbas.id}})    <a href="{{demirbas.id}}">{{ marka.demirbasadi }}</a>
+        <a href="{{demirbas.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{demirbas.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{demirbas.id}})    <a href="{{demirbas.id}}">{{ demirbas.demirbasadi }}</a>
         <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
       </li>
       {% endfor %}

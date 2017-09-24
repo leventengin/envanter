@@ -1,0 +1,41 @@
+
+{% extends "base_generic.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- for bootstrap   datepicker -->
+  {% load staticfiles%}
+  <link rel="stylesheet" href="{% static 'contrib/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'contrib/font-awesome.min.css' %}">
+  <script src="{% static 'contrib/bootstrap.js' %}"></script>
+  </head>
+
+  <!--
+  <head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        {% crispy form %}
+      </div>
+    </div>
+  </body>
+  -->
+  <body>
+    <form method="post" role="form">
+      {% csrf_token %}
+      {% load bootstrap_tags %}
+      {{ form|as_bootstrap }}
+      <div class="form-group">
+        <input type="submit" value="gir....2" class="btn btn-primary" />
+      </div>
+    </form>
+  </body>
+
+
+</html>
+{% endblock %}

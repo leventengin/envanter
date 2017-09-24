@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['0.0.0.0',
 
 # Application definition
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 INSTALLED_APPS = [
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'django_forms_bootstrap',
 ]
 
 
@@ -117,6 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
+DATE_INPUT_FORMATS = ('%d-%m-%Y')
+
 LANGUAGES = [
     ('en', _('English')),
     ('tr', _('Turkish')),
@@ -146,5 +150,3 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/giris/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-CRISPY_TEMPLATE_PACK = 'bootstrap3'

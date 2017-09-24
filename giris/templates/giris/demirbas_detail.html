@@ -3,9 +3,15 @@
 {% block content %}
   <h1>Demirbas Sayfası</h1>
 
-  <p><strong>Numarası:</strong> {{ demirbas.id }}</p>
-  <p><strong>Adı:</strong> {{ demirbas.demirbasadi }}</p>
-  <p><strong>Marka:</strong> {{ demirbas.marka }}</p>
+  <p><strong>id:      </strong> {{ demirbas.id }}</p>
+  <p><strong>Adı     :</strong> {{ demirbas.demirbasadi }}</p>
+  <p><strong>Proje   :</strong> {{ demirbas.proje }}</p>
+  <p><strong>Bölüm   :</strong> {{ demirbas.bolum }}</p>
+  <p><strong>Marka   :</strong> {{ demirbas.marka }}</p>
   <p><strong>Kategori:</strong> {{ demirbas.kategori }}</p>
+  <p></p>
+  <p></p>
+  <p></p>
+  <a href="/giris/demirbas/aktar"> Projeye aktar.. </a>
 
 {% endblock %}

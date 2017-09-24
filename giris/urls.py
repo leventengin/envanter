@@ -14,7 +14,9 @@ urlpatterns = [
     url(r'^demirbas/create/$', views.DemirbasCreate.as_view(), name='demirbas_create'),
     url(r'^demirbas/(?P<pk>\d+)/update/$', views.DemirbasUpdate.as_view(), name='demirbas_update'),
     url(r'^demirbas/(?P<pk>\d+)/delete/$', views.DemirbasDelete.as_view(), name='demirbas_delete'),
-
+    #url(r'^demirbas/aktar$', views.DenemeView.as_view(), name='denemeview'),
+    #url(r'^demirbas/aktar$', views.deneme_picker, name='deneme_picker'),
+    url(r'^demirbas/aktar$', views.get_name, name='get_name'),
 
     # proje urlleri aşağıda....
     url(r'^proje/$', views.ProjeListView.as_view(), name='proje'),
@@ -26,8 +28,6 @@ urlpatterns = [
     # marka urlleri aşağıda....
     url(r'^marka/$', views.MarkaListView.as_view(), name='marka'),
     url(r'^marka/(?P<pk>\d+)$', views.MarkaDetailView.as_view(), name='marka-detail'),
-    #url(r'^marka/duzeltsil/$', views.markaduzeltsil, name='markaduzeltsil'),
-    #url(r'^marka/ekle/$', views.markaekle, name='markaekle'),
     url(r'^marka/create/$', views.MarkaCreate.as_view(), name='marka_create'),
     url(r'^marka/(?P<pk>\d+)/update/$', views.MarkaUpdate.as_view(), name='marka_update'),
     url(r'^marka/(?P<pk>\d+)/delete/$', views.MarkaDelete.as_view(), name='marka_delete'),

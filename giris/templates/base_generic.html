@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
 
   {% block title %}<title>  balance  envanter  </title>{% endblock %}
@@ -18,11 +18,38 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+
   <!-- Add additional CSS in static file -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
 
+  <!-- for bootstrap   datepicker -->
+  {% load staticfiles%}
+  <link rel="stylesheet" href="{% static 'contrib/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'contrib/font-awesome.min.css' %}">
+  <script src="{% static 'contrib/bootstrap.js' %}"></script>
+
+
+  <!-- datepicker................................................-->
+  <!--
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script>
+            $(function() {
+                    $( "#id_birth_date" ).datepicker({
+                            dateFormat: "yy-mm-dd",
+                            defaultDate: "+1w",
+                            changeMonth: true,
+                            numberOfMonths: 2,
+                            onClose: function( selectedDate ) {
+                                    $( "#id_birth_date" ).datepicker( "option", "minDate", selectedDate );
+                            }
+                    });
+            });
+    </script>
+   -->
 
 </head>
 
@@ -86,14 +113,9 @@
                   <li><a href="/giris/musteri">Müşteri</a></li>
                   <p></p>
                   <p></p>
-                <!--  {% if user.is_authenticated %}
-                    <li>Kulanıcı: </li>
-                    <li>{{ user.get_username }}</li>
-                    <p></p>
-                    <li><a href="{% url 'logout'%}?next={{request.path}}">Çıkış</a></li>
-                 {% else %}
-                    <li><a href="{% url 'login'%}?next={{request.path}}">Giriş</a></li>
-                  {% endif %} -->
+                  {% if user.is_staff %}
+                      <li><a href="/admin/">Yönetim</a></li>
+                  {% endif %}
              </ul>
           {% endblock %}
       </div>
