@@ -50,6 +50,57 @@ class NameForm(forms.Form):
                     )
 
 
+class NameForm(forms.Form):
+    your_name = forms.CharField(label='senin adın......:', max_length=100)
+    tarih = forms.DateField(label='senin tarihin...:',
+        widget=forms.TextInput(attrs={ 'class':'datepicker' }),
+        #widget=forms.DateInput(format='%d/%m/%Y'),
+        #input_formats=('%d/%m/%Y',)
+        )
+    def clean(self):
+        cleaned_data = super(NameForm, self).clean()
+        cc_name = cleaned_data.get("your_name")
+        cc_date = cleaned_data.get("tarih")
+        base_date = "2017-08-29"
+        print (cc_name)
+        print (cc_date)
+        if cc_name and cc_date:
+            # Only do something if both fields are valid so far.
+            if cc_name == "levent" :
+                conv_date = cc_date.strftime('%Y-%m-%d')
+                print (conv_date)
+                if not (conv_date == base_date):
+                    raise forms.ValidationError(
+                        " isim ve tarihte uyuşmazlık var.... "
+                    )
+
+
+class DemirbasForm(forms.Form):
+    your_name = forms.CharField(label='senin adın......:', max_length=100)
+    tarih = forms.DateField(label='senin tarihin...:',
+        widget=forms.TextInput(attrs={ 'class':'datepicker' }),
+        #widget=forms.DateInput(format='%d/%m/%Y'),
+        #input_formats=('%d/%m/%Y',)
+        )
+    def clean(self):
+        cleaned_data = super(NameForm, self).clean()
+        cc_name = cleaned_data.get("your_name")
+        cc_date = cleaned_data.get("tarih")
+        base_date = "2017-08-29"
+        print (cc_name)
+        print (cc_date)
+        if cc_name and cc_date:
+            # Only do something if both fields are valid so far.
+            if cc_name == "levent" :
+                conv_date = cc_date.strftime('%Y-%m-%d')
+                print (conv_date)
+                if not (conv_date == base_date):
+                    raise forms.ValidationError(
+                        " isim ve tarihte uyuşmazlık var.... "
+                    )
+
+
+
 
 
 class DenemeForm(forms.Form):

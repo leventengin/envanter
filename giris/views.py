@@ -4,6 +4,7 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -19,9 +20,23 @@ class DenemeView(FormView):
     template_name = "deneme.html"
     form_class = DenemeForm
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import NameForm
+from .forms import NameForm, DemirbasForm
+
+
+
+def deneme_picker(request):
+    return render(request, 'deneme_picker.html')
+
+
+def home(request):
+    return render(request, 'ilk.html')
+
+
+def demirbas_popup(request):
+    return render(request, 'demirbas_popup.html')
+
 
 def get_name(request):
     # if this is a POST request we need to process the form data
@@ -50,8 +65,9 @@ def get_name(request):
 
             text = form.cleaned_data["your_name"]
             form = NameForm()
-            args = {'form': form, 'text': text}
+            #args = {'form': form, 'text': text}
             #return render(request, 'name.html', args)
+            messages.success(request, 'Başarıyla kaydetti....')
             return redirect('get_name')
         else:
             return render(request, 'name.html', {'form': form})
@@ -69,7 +85,6 @@ def get_name(request):
 
 
 
-
 @login_required
 def index(request):
     num_demirbas=demirbas.objects.all().count()
@@ -81,13 +96,80 @@ def index(request):
         context={'num_demirbas':num_demirbas,'num_proje':num_proje,'num_marka':num_marka,'num_kategori':num_kategori, 'num_musteri':num_musteri},
     )
 
-def deneme_picker(request):
-    return render(request, 'deneme_picker.html')
 
 
-def home(request):
-    return render(request, 'ilk.html')
 
+#demirbaş yaratma işlemi .......
+
+@login_required
+def demirbas_yarat(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = DemirbasForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            #return HttpResponseRedirect('/thanks/')
+            #return HttpResponse('..........................')
+            #return HttpResponse("<p>....... unutma</p>")
+
+            #data = {'name': 'Vitor', 'location': 'Finland', 'is_active': True, 'count': 28
+            #}
+            #return JsonResponse(data)
+            isim = request.POST.get('your_name', "")
+            tarih = request.POST.get('tarih', "")
+            kullanici = request.user
+            print (isim, kullanici, tarih)
+            #import pdb; pdb.set_trace()
+            kaydetme_obj = deneme_giris(yazi = isim, user = kullanici, tarih = tarih)
+            kaydetme_obj.save()
+
+            text = form.cleaned_data["your_name"]
+            form = DemirbasForm()
+            #args = {'form': form, 'text': text}
+            #return render(request, 'name.html', args)
+            messages.success(request, 'Başarıyla kaydetti....')
+            return redirect('demirbas_yarat')
+        else:
+            return render(request, '/giris/demirbas_yarat.html', {'form': form})
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = DemirbasForm()
+        deneme_giris_QS = deneme_giris.objects.all().order_by('-tarih')
+        args = {'form': form, 'deneme_giris_QS': deneme_giris_QS}
+        return render(request, '/giris/demirbas_yarat.html', args)
+
+
+
+def demirbas_guncelle(request, pk=None):
+    obj = get_object_or_404(demirbas, pk=pk)
+    form = DemirbasForm(request.POST or None,
+                        request.FILES or None, instance=obj)
+    if request.method == 'POST':
+        if form.is_valid():
+           form.save()
+           messages.success(request, 'Başarıyla güncelledi....')
+           return redirect('demirbas')
+    return render(request, '/giris/demirbas_list.html', {'form': form})
+
+
+
+
+def demirbas_sil(request, object_id):
+    object = get_object_or_404(Model, pk=object_id)
+    object.delete()
+    messages.success(request, 'Başarıyla silindi....')
+    return redirect('demirbas')
+
+
+
+
+# tüm list-view ve detail-view'lar......
 
 class DemirbasListView(LoginRequiredMixin,generic.ListView):
     model = demirbas
@@ -110,7 +192,6 @@ class MarkaListView(LoginRequiredMixin,generic.ListView):
 class MarkaDetailView(LoginRequiredMixin,generic.DetailView):
     model = marka
 
-
 class KategoriListView(LoginRequiredMixin,generic.ListView):
     model = kategori
     #paginate_by = 20
@@ -126,10 +207,17 @@ class MusteriDetailView(LoginRequiredMixin,generic.DetailView):
     model = musteri
 
 
+
+
+# demirbaş  yaratma, güncelleme, silme....
+
 class DemirbasCreate(LoginRequiredMixin,CreateView):
     model = demirbas
     fields = '__all__'
+    #messages.success(request, 'Başarıyla kaydedildi...')
+    #success_url = "/giris/demirbas_popup/"
     success_url = "/giris/demirbas/create/"
+
 
 class DemirbasUpdate(LoginRequiredMixin,UpdateView):
     model = demirbas
@@ -140,6 +228,9 @@ class DemirbasDelete(LoginRequiredMixin,DeleteView):
     model = demirbas
     success_url = reverse_lazy('demirbas')
 
+
+
+# proje yaratma, güncelleme, silme...
 
 class ProjeCreate(LoginRequiredMixin,CreateView):
     model = proje
@@ -156,6 +247,8 @@ class ProjeDelete(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy('proje')
 
 
+# marka yaratma, güncelleme silme...
+
 class MarkaCreate(LoginRequiredMixin,CreateView):
     model = marka
     fields = '__all__'
@@ -170,6 +263,9 @@ class MarkaDelete(LoginRequiredMixin,DeleteView):
     model = marka
     success_url = reverse_lazy('marka')
 
+
+# kategori yaratma, güncelleme, silme...
+
 class KategoriCreate(LoginRequiredMixin,CreateView):
     model = kategori
     fields = '__all__'
@@ -183,6 +279,8 @@ class KategoriUpdate(LoginRequiredMixin,UpdateView):
 class KategoriDelete(LoginRequiredMixin,DeleteView):
     model = kategori
     success_url = reverse_lazy('kategori')
+
+# müşteri yaratma, güncelleme, silme ...
 
 class MusteriCreate(LoginRequiredMixin,CreateView):
     model = musteri

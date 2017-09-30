@@ -12,11 +12,15 @@ urlpatterns = [
     url(r'^demirbas/$', views.DemirbasListView.as_view(), name='demirbas'),
     url(r'^demirbas/(?P<pk>\d+)$', views.DemirbasDetailView.as_view(), name='demirbas-detail'),
     url(r'^demirbas/create/$', views.DemirbasCreate.as_view(), name='demirbas_create'),
+    url(r'^demirbas/yarat/$', views.demirbas_yarat, name='demirbas_yarat'),
     url(r'^demirbas/(?P<pk>\d+)/update/$', views.DemirbasUpdate.as_view(), name='demirbas_update'),
+    url(r'^demirbas/(?P<pk>\d+)/guncelle/$', views.demirbas_guncelle, name='demirbas_guncelle'),
     url(r'^demirbas/(?P<pk>\d+)/delete/$', views.DemirbasDelete.as_view(), name='demirbas_delete'),
+    url(r'^demirbas/(?P<pk>\d+)/sil/$', views.demirbas_sil, name='demirbas_sil'),
     #url(r'^demirbas/aktar$', views.DenemeView.as_view(), name='denemeview'),
     #url(r'^demirbas/aktar$', views.deneme_picker, name='deneme_picker'),
     url(r'^demirbas/aktar$', views.get_name, name='get_name'),
+    url(r'^demirbas_popup/$', views.demirbas_popup, name='demirbas_popup'),
 
     # proje urlleri aşağıda....
     url(r'^proje/$', views.ProjeListView.as_view(), name='proje'),
