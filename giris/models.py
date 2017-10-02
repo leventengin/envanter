@@ -10,6 +10,55 @@ from django.contrib.auth.models import User
 
 
 
+DURUM = (
+('A', 'Aktif'),
+('P', 'Pasif'),
+)
+VARMI = (
+('E', 'Evet'),
+('H', 'Hayır'),
+)
+
+TIPI = (
+('T', 'Taşıma'),
+('D', 'Depoya Taşı'),
+('P', 'Pert'),
+('G', 'Depodan Taşı'),
+('X', 'Pert İptal'),
+('Z', 'Proje Sonrası Verildi')
+)
+
+ILLER = (
+('ANK', 'Ankara'),
+('IST', 'İstanbul'),
+('IZM', 'İzmir'),
+('ADA', 'Adana'),
+('BUR', 'Bursa'),
+('KON', 'Konya'),
+('KAY', 'Kayseri'),
+('MER', 'Mersin'),
+('ANT', 'Antalya'),
+('SAM', 'Samsun'),
+('TRA', 'Trabzon'),
+('MAL', 'Malatya'),
+)
+
+FATURA_TURU = (
+('S', 'SabitÜcret'),
+('P', 'ProjeSaati'),
+('G', 'GörevSaati'),
+)
+
+FATURA_DURUMU = (
+('B', 'Başlamadı'),
+('D', 'DevamEdiyor'),
+('X', 'Beklemede'),
+('I', 'İptal'),
+('T', 'Tamamlandı'),
+)
+
+
+
 class deneme_giris(models.Model):
     yazi = models.CharField(max_length=200)
     user = models.ForeignKey(User)
@@ -75,36 +124,8 @@ class musteri(models.Model):
 
 
 class proje(models.Model):
-    ILLER = (
-    ('ANK', 'Ankara'),
-    ('IST', 'İstanbul'),
-    ('IZM', 'İzmir'),
-    ('ADA', 'Adana'),
-    ('BUR', 'Bursa'),
-    ('KON', 'Konya'),
-    ('KAY', 'Kayseri'),
-    ('MER', 'Mersin'),
-    ('ANT', 'Antalya'),
-    ('SAM', 'Samsun'),
-    ('TRA', 'Trabzon'),
-    ('MAL', 'Malatya'),
-    )
-
-    FATURA_TURU = (
-    ('S', 'SabitÜcret'),
-    ('P', 'ProjeSaati'),
-    ('G', 'GörevSaati'),
-    )
-
-    FATURA_DURUMU = (
-    ('B', 'Başlamadı'),
-    ('D', 'DevamEdiyor'),
-    ('X', 'Beklemede'),
-    ('I', 'İptal'),
-    ('T', 'Tamamlandı'),
-    )
     proje_adi = models.TextField(max_length=200)
-    ili = models.CharField(max_length=3, choices=ILLER)
+    ili = models.CharField(max_length=3, choices=ILLER, default='ANK')
     musteri = models.ForeignKey(musteri, on_delete=models.PROTECT)
     sirket = models.ForeignKey(sirket, on_delete=models.PROTECT)
     fat_turu = models.CharField(max_length=1, choices=FATURA_TURU)
@@ -117,15 +138,8 @@ class proje(models.Model):
 
 
 
+
 class demirbas(models.Model):
-    DURUM = (
-    ('A', 'Aktif'),
-    ('P', 'Pasif'),
-    )
-    VARMI = (
-    ('E', 'Evet'),
-    ('H', 'Hayır'),
-    )
     demirbasadi = models.CharField(max_length=200)
     proje = models.ForeignKey(proje, on_delete=models.PROTECT)
     bolum = models.CharField(max_length=200)
@@ -134,11 +148,12 @@ class demirbas(models.Model):
     alt_kategori = models.ForeignKey(alt_kategori, on_delete=models.PROTECT)
     modeli = models.CharField(max_length=200)
     durum = models.CharField(max_length=1, choices=DURUM)
-    gar_varmi = models.CharField(max_length=1, choices=VARMI)
+    gar_varmi = models.CharField(max_length=1, choices=VARMI, default='E')
     garanti_bitis = models.DateField()
     amts_kalanyil = models.PositiveIntegerField()
     env_bedeli = models.PositiveIntegerField()
     aciklama = models.TextField()
+    kullanici = models.CharField(max_length=100, default='admin')
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return(self.demirbasadi)
@@ -146,18 +161,10 @@ class demirbas(models.Model):
 
 
 class hareket(models.Model):
-    TIPI = (
-    ('T', 'Taşıma'),
-    ('D', 'Depoya Taşı'),
-    ('P', 'Pert'),
-    ('G', 'Depodan Taşı'),
-    ('X', 'Pert İptal'),
-    ('Z', 'Proje Sonrası Verildi')
-    )
     demirbas = models.ForeignKey(demirbas, on_delete=models.PROTECT)
     har_tipi = models.CharField(max_length=1, choices=TIPI)
-    mevcut_proj = models.ForeignKey(proje, on_delete=models.PROTECT)
-    sonraki_proj = models.ForeignKey(proje, on_delete=models.PROTECT)
+    mevcut_proj = models.ForeignKey(proje, related_name='current_project', on_delete=models.PROTECT)
+    sonraki_proj = models.ForeignKey(proje, related_name='next_project', on_delete=models.PROTECT)
     aciklama = models.TextField()
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
@@ -169,11 +176,11 @@ class ariza(models.Model):
     ariza_adi = models.CharField(max_length=200)
     demirbas = models.ForeignKey(demirbas, on_delete=models.PROTECT)
     servis = models.ForeignKey(servis, on_delete=models.PROTECT)
-    yedek_parca_1 = models.ForeignKey(yedek_parca, on_delete=models.PROTECT, blank=True)
-    yedek_parca_2 = models.ForeignKey(yedek_parca, on_delete=models.PROTECT, blank=True)
-    yedek_parca_3 = models.ForeignKey(yedek_parca, on_delete=models.PROTECT, blank=True)
-    yedek_parca_4 = models.ForeignKey(yedek_parca, on_delete=models.PROTECT, blank=True)
-    yedek_parca_5 = models.ForeignKey(yedek_parca, on_delete=models.PROTECT, blank=True)
+    yedek_parca_1 = models.ForeignKey(yedek_parca, related_name='ilk_parca', on_delete=models.PROTECT, blank=True)
+    yedek_parca_2 = models.ForeignKey(yedek_parca, related_name='ikinci_parca', on_delete=models.PROTECT, blank=True)
+    yedek_parca_3 = models.ForeignKey(yedek_parca, related_name='ucuncu_parca', on_delete=models.PROTECT, blank=True)
+    yedek_parca_4 = models.ForeignKey(yedek_parca, related_name='dorduncu_parca', on_delete=models.PROTECT, blank=True)
+    yedek_parca_5 = models.ForeignKey(yedek_parca, related_name='besinci_parca', on_delete=models.PROTECT, blank=True)
     tutar = models.PositiveIntegerField()
     aciklama = models.TextField()
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
