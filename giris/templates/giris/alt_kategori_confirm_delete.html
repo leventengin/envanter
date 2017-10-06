@@ -1,0 +1,19 @@
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<!--  buraya if konulacak ...-->
+
+
+      <h1>Alt Kategori Sil</h1>
+
+      <p>Bu alt kategoriyi silmek istediğinizden emin misiniz: {{ alt_kategori }}?</p>
+
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" action="" value="Evet, sil.." />
+      </form>
+
+{% endblock %}

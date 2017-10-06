@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Arıza Listesi</h1>
+
+    {% if ariza_list %}
+    <ul>
+
+      {% for ariza in ariza_list %}
+      <li>
+        <a href="{{ariza.id}}/sil"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{ariza.id}}/guncelle"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{ariza.id}})    <a href="{{ariza.id}}">{{ ariza.ariza_adi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
+      </li>
+      {% endfor %}
+      <p> </p>
+      <a href="/giris/ariza/yarat"> Arıza Ekle </a>
+    </ul>
+    {% else %}
+      <p>Kayıtlı arıza yok ....</p>
+      <p> </p>
+      <a href="/giris/ariza/yarat"> Arıza Ekle </a>
+    {% endif %}
+
+{% endblock %}

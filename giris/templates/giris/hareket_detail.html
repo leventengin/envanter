@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Demirbas Sayfası</h1>
+
+  <p><strong>id               :</strong> {{ hareket.id }}</p>
+  <p><strong>Demirbaş         :</strong> {{ hareket.demirbas }}</p>
+  <p><strong>Mevcut Proje     :</strong> {{ hareket.mevcut_proj }}</p>
+  <p><strong>Sonraki Proje    :</strong> {{ hareket.sonraki_proj }}</p>
+  <p><strong>Açıklama         :</strong> {{ hareket.aciklama }}</p>
+  <p><strong>Kullanıcı        :</strong> {{ hareket.kullanici }}</p>
+  <p><strong>Yaratıldı        :</strong> {{ hareket.yaratildi }}</p>
+  <p></p>
+  <p></p>
+  <p></p>
+  <a href="/giris/hareket/aktar"> Projeye aktar.. </a>
+
+{% endblock %}

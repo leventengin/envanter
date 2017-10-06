@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Yedek Parça Listesi</h1>
+
+    {% if yedek_parca_list %}
+    <ul>
+
+      {% for yedek_parca in yedek_parca_list %}
+      <li>
+        <a href="{{yedek_parca.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{yedek_parca.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{yedek_parca.id}})    <a href="{{yedek_parca.id}}">{{ yedek_parca.yparca_adi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
+      </li>
+      {% endfor %}
+      <p> </p>
+      <a href="/giris/yedek_parca/create"> Yedek Parça Ekle </a>
+    </ul>
+    {% else %}
+      <p>Kayıtlı yedek parça yok ....</p>
+      <p> </p>
+      <a href="/giris/yedek_parca/create"> Yedek Parça Ekle </a>
+    {% endif %}
+
+{% endblock %}

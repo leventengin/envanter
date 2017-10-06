@@ -17,12 +17,13 @@ body {
 }  */
 
 .navbar {
-        background-color:#FFFFFF;
+        background-color:#ffb266;
+/*        background-color:#FFFFFF;  */
         background-image: none;
     }
 
 .navbar-fixed-left {
-  /*  border-style: none; */
+  border-style: none; 
   width: 140px;
 
 

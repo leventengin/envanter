@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Alt Kategori Listesi</h1>
+
+    {% if alt_kategori_list %}
+    <ul>
+
+      {% for alt_kategori in alt_kategori_list %}
+      <li>
+        <a href="{{alt_kategori.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{alt_kategori.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{alt_kategori.id}})    <a href="{{alt_kategori.id}}">{{ alt_kategori.alt_kategori_adi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
+      </li>
+      {% endfor %}
+      <p> </p>
+      <a href="/giris/alt_kategori/create"> Alt Kategori Ekle </a>
+    </ul>
+    {% else %}
+      <p>Kayıtlı alt kategori yok ....</p>
+      <p> </p>
+      <a href="/giris/alt_kategori/create"> Alt Kategori Ekle </a>
+    {% endif %}
+
+{% endblock %}

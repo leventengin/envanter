@@ -1,0 +1,19 @@
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<!--  buraya if konulacak ...-->
+
+
+      <h1>Yedek Parça Sil</h1>
+
+      <p>Bu yedek parçayı silmek istediğinizden emin misiniz: {{ yedek_parca }}?</p>
+
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" action="" value="Evet, sil.." />
+      </form>
+
+{% endblock %}

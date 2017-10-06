@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Servis Sayfası</h1>
+
+  <p><strong>Numarası    :</strong> {{ servis.id }}</p>
+  <p><strong>Adı         :</strong> {{ servis.servis_adi }}</p>
+  <p><strong>Mail adresi :</strong> {{ servis.mail_adresi }}</p>
+  <p><strong>Kişi adı    :</strong> {{ servis.kisi_adi }}</p>
+  <p><strong>Kişi soyadı :</strong> {{ servis.kisi_soyadi }}</p>
+
+
+{% endblock %}

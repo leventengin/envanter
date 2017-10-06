@@ -1,0 +1,20 @@
+
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<!--  buraya if konulacak ...-->
+
+
+      <h1>Hareket Sil</h1>
+
+      <p>Bu hareketi silmek istediğinizden emin misiniz: {{ hareket }}?</p>
+
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" action="hareket_sil_kesin" value="Evet, sil.." />
+      </form>
+
+{% endblock %}

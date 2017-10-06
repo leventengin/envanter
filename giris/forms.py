@@ -98,6 +98,7 @@ class NameForm(forms.Form):
 
 
 class DemirbasForm(forms.Form):
+    pk_no = forms.IntegerField(required=False, widget=forms.HiddenInput())
     adi = forms.CharField(label='Demirbaş Adı..:', max_length=100)
     proje = forms.ModelChoiceField(label='Proje Adı..:', queryset=proje.objects.all())
     bolum = forms.CharField(label='Bölümü...:', max_length=100)
@@ -114,9 +115,9 @@ class DemirbasForm(forms.Form):
     bedeli = forms.IntegerField(label='Bedeli...:', min_value=0)
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
 
-
     def clean(self):
         cleaned_data = super(DemirbasForm, self).clean()
+        cc_pk = cleaned_data.get("pk_no")
         cc_adi = cleaned_data.get("adi")
         cc_proje = cleaned_data.get("proje")
         cc_bolum = cleaned_data.get("bolum")
@@ -130,26 +131,32 @@ class DemirbasForm(forms.Form):
         cc_amts_kalanyil = cleaned_data.get("amts_kalanyil")
         cc_bedeli = cleaned_data.get("bedeli")
         cc_aciklama = cleaned_data.get("aciklama")
+        print ("pk...önemli...:", cc_pk)
         print (cc_adi, cc_proje, cc_bedeli, cc_garanti_varmi, cc_garanti_bitis)
         #if cc_garanti_varmi and cc_garanti_bitis:
             # Only do something if both fields are valid so far.
+        #conv_date = cc_garanti_bitis.strftime('%Y-%m-%d')
         if cc_garanti_varmi == "E" :
-            print (cc_garanti_bitis)
-            print (date.today())
+            print ("E - garanti bitiş ", cc_garanti_bitis)
+            print ("date today....",  date.today())
+            #print ("conv date", conv_date)
             if cc_garanti_bitis == None:
                 raise forms.ValidationError(
-                    " garanti bitiş süresi girmelisiniz.... "
+                    " garanti bitiş tarihi girmelisiniz.... "
                 )
             if cc_garanti_bitis < date.today():
-                raise forms.ValidationError(
-                    " ileri bir tarih girmelisiniz.... "
-                )
+                if cc_pk == None:
+                    raise forms.ValidationError(
+                        " garanti bitiş için ileri bir tarih girmelisiniz.... "
+                        )
         if cc_garanti_varmi == "H" :
-            print (cc_garanti_bitis)
+            print ("H -  garanti bitiş", cc_garanti_bitis)
+            #print ("conv date", conv_date)
             if not (cc_garanti_bitis == None):
                 raise forms.ValidationError(
-                    " garanti bitiş süresi boş olmalı.... "
+                    " garanti bitiş tarihi boş olmalı.... "
                 )
+
 
 
 
@@ -159,59 +166,27 @@ class Demirbas_Ara_Form(forms.Form):
 
 
 
-class HareketForm(forms.Form):
-    adi = forms.CharField(label='Demirbaş Adı..:', max_length=100)
-    proje = forms.ModelChoiceField(label='Proje Adı..:', queryset=proje.objects.all())
-    bolum = forms.CharField(label='Bölümü...:', max_length=100)
-    marka = forms.ModelChoiceField(label='Marka........:', queryset=marka.objects.all())
-    ekipman_turu = forms.ModelChoiceField(label='Ekipman Türü..:', queryset=ekipman_turu.objects.all())
-    alt_kategori = forms.ModelChoiceField(label='Alt Kategori..:', queryset=alt_kategori.objects.all())
-    modeli = forms.CharField(label='Modeli..:', max_length=100)
-    durumu = forms.ChoiceField(label='Durumu........:', widget=forms.Select, choices=DURUM,)
-    garanti_varmi = forms.ChoiceField(label='Garanti Var Mı.:',  widget=forms.Select, choices=VARMI,)
-    garanti_bitis = forms.DateField(label='Garanti Bitiş Tarihi...:', required=False,
-        widget=forms.TextInput(attrs={ 'class':'datepicker',})
-        )
-    amts_kalanyil = forms.IntegerField(label='Kalan Amortisman Yılı...:', min_value=0)
-    bedeli = forms.IntegerField(label='Bedeli...:', min_value=0)
-    aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
 
+
+class HareketForm(forms.Form):
+    sakli_proj = forms.CharField(required=False, widget=forms.HiddenInput())
+    har_tipi = forms.ChoiceField(label='Hareket tipi........:', widget=forms.Select, choices=TIPI,)
+    sonraki_proj = forms.ModelChoiceField(label='Sonraki proje.......:', queryset=proje.objects.all())
+    aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
 
     def clean(self):
         cleaned_data = super(HareketForm, self).clean()
-        cc_adi = cleaned_data.get("adi")
-        cc_proje = cleaned_data.get("proje")
-        cc_bolum = cleaned_data.get("bolum")
-        cc_marka = cleaned_data.get("marka")
-        cc_ekipman_turu = cleaned_data.get("ekipman_turu")
-        cc_alt_kategori = cleaned_data.get("alt_kategori")
-        cc_modeli = cleaned_data.get("modeli")
-        cc_durumu = cleaned_data.get("durumu")
-        cc_garanti_varmi = cleaned_data.get("garanti_varmi")
-        cc_garanti_bitis = cleaned_data.get("garanti_bitis")
-        cc_amts_kalanyil = cleaned_data.get("amts_kalanyil")
-        cc_bedeli = cleaned_data.get("bedeli")
+        cc_sakli_proj = cleaned_data.get("sakli_proj")
+        cc_har_tipi = cleaned_data.get("har_tipi")
+        cc_sonraki_proj = cleaned_data.get("sonraki_proj")
         cc_aciklama = cleaned_data.get("aciklama")
-        print (cc_adi, cc_proje, cc_bedeli, cc_garanti_varmi, cc_garanti_bitis)
-        #if cc_garanti_varmi and cc_garanti_bitis:
-            # Only do something if both fields are valid so far.
-        if cc_garanti_varmi == "E" :
-            print (cc_garanti_bitis)
-            print (date.today())
-            if cc_garanti_bitis == None:
-                raise forms.ValidationError(
-                    " garanti bitiş süresi girmelisiniz.... "
-                )
-            if cc_garanti_bitis < date.today():
-                raise forms.ValidationError(
-                    " ileri bir tarih girmelisiniz.... "
-                )
-        if cc_garanti_varmi == "H" :
-            print (cc_garanti_bitis)
-            if not (cc_garanti_bitis == None):
-                raise forms.ValidationError(
-                    " garanti bitiş süresi boş olmalı.... "
-                )
+        cc_sonraki_proj_id = cleaned_data.get("sonraki_proj.id")
+        print ("saklı proje...:", cc_sakli_proj)
+        print ("sonraki proje....", cc_sonraki_proj)
+        print ("sonraki proje..id", cc_sonraki_proj_id)
+        print (cc_har_tipi, cc_aciklama)
+        if (cc_sakli_proj == cc_sonraki_proj):
+            raise forms.ValidationError(" iki proje aynı olamaz.... ")
 
 
 class Hareket_Ara_Form(forms.Form):
@@ -219,60 +194,65 @@ class Hareket_Ara_Form(forms.Form):
 
 
 class ArizaForm(forms.Form):
-    adi = forms.CharField(label='Demirbaş Adı..:', max_length=100)
-    proje = forms.ModelChoiceField(label='Proje Adı..:', queryset=proje.objects.all())
-    bolum = forms.CharField(label='Bölümü...:', max_length=100)
-    marka = forms.ModelChoiceField(label='Marka........:', queryset=marka.objects.all())
-    ekipman_turu = forms.ModelChoiceField(label='Ekipman Türü..:', queryset=ekipman_turu.objects.all())
-    alt_kategori = forms.ModelChoiceField(label='Alt Kategori..:', queryset=alt_kategori.objects.all())
-    modeli = forms.CharField(label='Modeli..:', max_length=100)
-    durumu = forms.ChoiceField(label='Durumu........:', widget=forms.Select, choices=DURUM,)
-    garanti_varmi = forms.ChoiceField(label='Garanti Var Mı.:',  widget=forms.Select, choices=VARMI,)
-    garanti_bitis = forms.DateField(label='Garanti Bitiş Tarihi...:', required=False,
+    pk_no = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    ariza_adi = forms.CharField(label='Arıza Adı..:', max_length=100)
+    demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
+    servis = forms.ModelChoiceField(label='servis Adı..:', queryset=servis.objects.all())
+    yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yedek_parca.objects.all())
+    yedek_parca_2 = forms.ModelChoiceField(label='Yedek parça -2........:', queryset=yedek_parca.objects.all())
+    yedek_parca_3 = forms.ModelChoiceField(label='Yedek parça -3........:', queryset=yedek_parca.objects.all())
+    yedek_parca_4 = forms.ModelChoiceField(label='Yedek parça -4........:', queryset=yedek_parca.objects.all())
+    yedek_parca_5 = forms.ModelChoiceField(label='Yedek parça -5........:', queryset=yedek_parca.objects.all())
+    kayit_acilis = forms.DateField(label='Kayıt açılış tarihi...:', required=False,
         widget=forms.TextInput(attrs={ 'class':'datepicker',})
         )
-    amts_kalanyil = forms.IntegerField(label='Kalan Amortisman Yılı...:', min_value=0)
-    bedeli = forms.IntegerField(label='Bedeli...:', min_value=0)
+    kayit_kapanis = forms.DateField(label='Kayıt kapanış tarihi...:', required=False,
+        widget=forms.TextInput(attrs={ 'class':'datepicker',})
+        )
+    tutar = forms.IntegerField(label='Tutarı...:', min_value=0)
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
-
 
     def clean(self):
         cleaned_data = super(HareketForm, self).clean()
-        cc_adi = cleaned_data.get("adi")
-        cc_proje = cleaned_data.get("proje")
-        cc_bolum = cleaned_data.get("bolum")
-        cc_marka = cleaned_data.get("marka")
-        cc_ekipman_turu = cleaned_data.get("ekipman_turu")
-        cc_alt_kategori = cleaned_data.get("alt_kategori")
-        cc_modeli = cleaned_data.get("modeli")
-        cc_durumu = cleaned_data.get("durumu")
-        cc_garanti_varmi = cleaned_data.get("garanti_varmi")
-        cc_garanti_bitis = cleaned_data.get("garanti_bitis")
-        cc_amts_kalanyil = cleaned_data.get("amts_kalanyil")
-        cc_bedeli = cleaned_data.get("bedeli")
+        cc_ariza_adi = cleaned_data.get("ariza_adi")
+        cc_servis = cleaned_data.get("servis")
+        cc_yedek_parca_1 = cleaned_data.get("yedek_parca_1")
+        cc_yedek_parca_2 = cleaned_data.get("yedek_parca_2")
+        cc_yedek_parca_3 = cleaned_data.get("yedek_parca_3")
+        cc_yedek_parca_4 = cleaned_data.get("yedek_parca_4")
+        cc_yedek_parca_5 = cleaned_data.get("yedek_parca_5")
+        cc_kayit_acilis = cleaned_data.get("kayit_acilis")
+        cc_kayit_kapanis = cleaned_data.get("kayit_kapanis")
+        cc_tutar = cleaned_data.get("tutar")
         cc_aciklama = cleaned_data.get("aciklama")
-        print (cc_adi, cc_proje, cc_bedeli, cc_garanti_varmi, cc_garanti_bitis)
-        #if cc_garanti_varmi and cc_garanti_bitis:
-            # Only do something if both fields are valid so far.
-        if cc_garanti_varmi == "E" :
-            print (cc_garanti_bitis)
-            print (date.today())
-            if cc_garanti_bitis == None:
-                raise forms.ValidationError(
-                    " garanti bitiş süresi girmelisiniz.... "
-                )
-            if cc_garanti_bitis < date.today():
-                raise forms.ValidationError(
-                    " ileri bir tarih girmelisiniz.... "
-                )
-        if cc_garanti_varmi == "H" :
-            print (cc_garanti_bitis)
-            if not (cc_garanti_bitis == None):
-                raise forms.ValidationError(
-                    " garanti bitiş süresi boş olmalı.... "
-                )
+        print (cc_ariza_adi, cc_servis, cc_tutar, cc_aciklama,)
+        print (cc_yedek_parca_1, cc_yedek_parca_2, cc_yedek_parca_3, cc_yedek_parca_4, cc_yedek_parca_5)
+        print (cc_kayit_acilis, cc_kayit_kapanis)
 
-
+        if cc_yedek_parca_1 == "" :
+            if ( not(cc_yedek_parca_2 == "") or not(cc_yedek_parca_3 == "") or not(cc_yedek_parca_4 == "") or not(cc_yedek_parca_5 == "")):
+                raise forms.ValidationError(
+                    " yedek parçaları sıralı girmelisiniz .... "
+                )
+        if cc_yedek_parca_2 == "" :
+            if ( not(cc_yedek_parca_3 == "") or not(cc_yedek_parca_4 == "") or not(cc_yedek_parca_5 == "")):
+                raise forms.ValidationError(
+                    " yedek parçaları sıralı girmelisiniz .... "
+                )
+        if cc_yedek_parca_3 == "" :
+            if ( not(cc_yedek_parca_4 == "") or not(cc_yedek_parca_5 == "")):
+                raise forms.ValidationError(
+                    " yedek parçaları sıralı girmelisiniz .... "
+                )
+        if cc_yedek_parca_4 == "" :
+            if ( not(cc_yedek_parca_5 == "")):
+                raise forms.ValidationError(
+                    " yedek parçaları sıralı girmelisiniz .... "
+                )
+        if (cc_kayit_acilis > cc_kayit_kapanis):
+            raise forms.ValidationError(
+                "açılış tarihi kapanış tarihini geçemez....."
+        )
 
 
 class Ariza_Ara_Form(forms.Form):

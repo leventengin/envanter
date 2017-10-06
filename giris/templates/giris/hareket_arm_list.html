@@ -1,0 +1,28 @@
+
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Hareket Arama Sonuçları</h1>
+
+    {% if hareket_arama_filtresi %}
+    <ul>
+
+      {% for hareket in hareket_arama_filtresi %}
+      <li>
+        <a href="hareket/{{hareket.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="hareket/{{hareket.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{hareket.id}})    <a href="hareket/{{hareket.id}}">{{ hareket.demirbas }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
+      </li>
+      {% endfor %}
+      <p> </p>
+      <!-- <a href="/giris/demirbas/create"> Demirbaş Ekle </a>  -->
+    </ul>
+    {% else %}
+      <p>Aranan hareket yok ....</p>
+      <p> </p>
+      <!--  <a href="/giris/demirbas/create"> Demirbaş Ekle </a>  -->
+    {% endif %}
+
+{% endblock %}

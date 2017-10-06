@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Ariza Sayfası</h1>
+
+  <p><strong>id               :</strong> {{ ariza.id }}</p>
+  <p><strong>Adı              :</strong> {{ ariza.ariza_adi }}</p>
+  <p><strong>Demirbas         :</strong> {{ ariza.demirbas }}</p>
+  <p><strong>Servis           :</strong> {{ ariza.servis }}</p>
+  <p><strong>Yedek parça 1    :</strong> {{ ariza.yedek_parca_1 }}</p>
+  <p><strong>Yedek parça 2    :</strong> {{ ariza.yedek_parca_2 }}</p>
+  <p><strong>Yedek parça 3    :</strong> {{ ariza.yedek_parca_3 }}</p>
+  <p><strong>Yedek parça 4    :</strong> {{ ariza.yedek_parca_4 }}</p>
+  <p><strong>Yedek parça 5    :</strong> {{ ariza.yedek_parca_5 }}</p>
+  <p><strong>Kayıt açılış     :</strong> {{ ariza.yedek_parca_4 }}</p>
+  <p><strong>Kayıt kapanış    :</strong> {{ ariza.yedek_parca_5 }}</p>
+  <p><strong>Tutar            :</strong> {{ ariza.tutar }}</p>
+  <p><strong>Açıklama         :</strong> {{ ariza.aciklama }}</p>
+  <p><strong>Kullanıcı        :</strong> {{ ariza.kullanici }}</p>
+  <p><strong>Yaratıldı        :</strong> {{ ariza.yaratildi }}</p>
+  <p></p>
+  <p></p>
+  <p></p>
+  <a href="/giris/ariza/aktar"> Projeye aktar.. </a>
+
+{% endblock %}

@@ -101,7 +101,7 @@ urlpatterns = [
     # hareket urlleri aşağıda....
     url(r'^hareket/$', views.HareketListView.as_view(), name='hareket'),
     url(r'^hareket/(?P<pk>\d+)$', views.HareketDetailView.as_view(), name='hareket-detail'),
-    url(r'^hareket/yarat/$', views.hareket_yarat, name='hareket_yarat'),
+    url(r'^hareket/yarat/(?P<pk>\d+)$', views.hareket_yarat, name='hareket_yarat'),
     url(r'^hareket/(?P<pk>\d+)/guncelle/$', views.hareket_guncelle, name='hareket_guncelle'),
     url(r'^hareket/(?P<pk>\d+)/sil/$', views.hareket_sil, name='hareket_sil'),
     url(r'^hareket_ara$', views.hareket_ara, name='hareket_ara'),

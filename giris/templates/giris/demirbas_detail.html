@@ -3,15 +3,25 @@
 {% block content %}
   <h1>Demirbas Sayfası</h1>
 
-  <p><strong>id:      </strong> {{ demirbas.id }}</p>
-  <p><strong>Adı     :</strong> {{ demirbas.demirbasadi }}</p>
-  <p><strong>Proje   :</strong> {{ demirbas.proje }}</p>
-  <p><strong>Bölüm   :</strong> {{ demirbas.bolum }}</p>
-  <p><strong>Marka   :</strong> {{ demirbas.marka }}</p>
-  <p><strong>Kategori:</strong> {{ demirbas.kategori }}</p>
+  <p><strong>id               :</strong> {{ demirbas.id }}</p>
+  <p><strong>Adı              :</strong> {{ demirbas.demirbasadi }}</p>
+  <p><strong>Proje            :</strong> {{ demirbas.proje }}</p>
+  <p><strong>Marka            :</strong> {{ demirbas.marka }}</p>
+  <p><strong>Bölüm            :</strong> {{ demirbas.bolüm }}</p>
+  <p><strong>Ekipman türü     :</strong> {{ demirbas.ekipman_turu }}</p>
+  <p><strong>Alt kategori     :</strong> {{ demirbas.alt_kategori }}</p>
+  <p><strong>Modeli           :</strong> {{ demirbas.modeli }}</p>
+  <p><strong>Durum            :</strong> {{ demirbas.durum }}</p>
+  <p><strong>Garanti var mi   :</strong> {{ demirbas.gar_varmi }}</p>
+  <p><strong>Garanti bitiş    :</strong> {{ demirbas.garanti_bitis }}</p>
+  <p><strong>Amort. kalan yıl :</strong> {{ demirbas.amts_kalanyil }}</p>
+  <p><strong>Envanter bedeli  :</strong> {{ demirbas.env_bedeli }}</p>
+  <p><strong>Açıklama         :</strong> {{ demirbas.aciklama }}</p>
+  <p><strong>Kullanıcı        :</strong> {{ demirbas.kullanici }}</p>
+  <p><strong>Yaratıldı        :</strong> {{ demirbas.yaratildi }}</p>
   <p></p>
   <p></p>
   <p></p>
-  <a href="/giris/demirbas/aktar"> Projeye aktar.. </a>
+  <a href="/giris/hareket/yarat/{{ demirbas.id }}"> Taşıma işlemi... </a>
 
 {% endblock %}

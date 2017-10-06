@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Yedek Parça Sayfası</h1>
+
+  <p><strong>Numarası    :</strong> {{ yedek_parca.id }}</p>
+  <p><strong>Adı         :</strong> {{ yedek_parca.yparca_adi }}</p>
+  <p><strong>Alt kategori:</strong> {{ yedek_parca.alt_kategori }}</p>
+
+
+{% endblock %}

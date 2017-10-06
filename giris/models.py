@@ -3,11 +3,10 @@
 
 from __future__ import unicode_literals
 from django.db import models
-from datetime import datetime
+from datetime import datetime, date
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-
 
 
 DURUM = (
@@ -149,7 +148,7 @@ class demirbas(models.Model):
     modeli = models.CharField(max_length=200)
     durum = models.CharField(max_length=1, choices=DURUM)
     gar_varmi = models.CharField(max_length=1, choices=VARMI, default='E')
-    garanti_bitis = models.DateField()
+    garanti_bitis = models.DateField(default="2000-01-01", blank=True)
     amts_kalanyil = models.PositiveIntegerField()
     env_bedeli = models.PositiveIntegerField()
     aciklama = models.TextField()
@@ -161,11 +160,13 @@ class demirbas(models.Model):
 
 
 class hareket(models.Model):
-    demirbas = models.ForeignKey(demirbas, on_delete=models.PROTECT)
+    demirbas_id = models.ForeignKey(demirbas, on_delete=models.PROTECT)
+    demirbas_adi = models.CharField(max_length=100, default="demirbas")
     har_tipi = models.CharField(max_length=1, choices=TIPI)
     mevcut_proj = models.ForeignKey(proje, related_name='current_project', on_delete=models.PROTECT)
     sonraki_proj = models.ForeignKey(proje, related_name='next_project', on_delete=models.PROTECT)
     aciklama = models.TextField()
+    kullanici = models.CharField(max_length=100, default='admin')
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return(self.demirbas)
@@ -181,8 +182,11 @@ class ariza(models.Model):
     yedek_parca_3 = models.ForeignKey(yedek_parca, related_name='ucuncu_parca', on_delete=models.PROTECT, blank=True)
     yedek_parca_4 = models.ForeignKey(yedek_parca, related_name='dorduncu_parca', on_delete=models.PROTECT, blank=True)
     yedek_parca_5 = models.ForeignKey(yedek_parca, related_name='besinci_parca', on_delete=models.PROTECT, blank=True)
+    kayit_acilis = models.DateField(default=date.today, blank=True)
+    kayit_kapanis = models.DateField(default=date.today, blank=True)
     tutar = models.PositiveIntegerField()
     aciklama = models.TextField()
+    kullanici = models.CharField(max_length=100, default='admin')
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return(self.ariza_adi)

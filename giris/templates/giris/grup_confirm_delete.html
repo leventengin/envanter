@@ -1,0 +1,19 @@
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<!--  buraya if konulacak ...-->
+
+
+      <h1>Grup Sil</h1>
+
+      <p>Bu grubu silmek istediğinizden emin misiniz: {{ grup }}?</p>
+
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" action="" value="Evet, sil.." />
+      </form>
+
+{% endblock %}

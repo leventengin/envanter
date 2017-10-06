@@ -1,0 +1,28 @@
+
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Arıza Arama Sonuçları</h1>
+
+    {% if ariza_arama_filtresi %}
+    <ul>
+
+      {% for ariza in ariza_arama_filtresi %}
+      <li>
+        <a href="ariza/{{ariza.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="ariza/{{ariza.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{ariza.id}})    <a href="ariza/{{ariza.id}}">{{ ariza.ariza_adi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
+      </li>
+      {% endfor %}
+      <p> </p>
+      <!-- <a href="/giris/demirbas/create"> Demirbaş Ekle </a>  -->
+    </ul>
+    {% else %}
+      <p>Aranan arıza yok ....</p>
+      <p> </p>
+      <!--  <a href="/giris/demirbas/create"> Demirbaş Ekle </a>  -->
+    {% endif %}
+
+{% endblock %}

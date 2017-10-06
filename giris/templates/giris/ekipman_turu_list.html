@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Ekipman Türü Listesi</h1>
+
+    {% if ekipman_turu_list %}
+    <ul>
+
+      {% for ekipman_turu in ekipman_turu_list %}
+      <li>
+        <a href="{{ekipman_turu.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{ekipman_turu.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{ekipman_turu.id}})    <a href="{{ekipman_turu.id}}">{{ ekipman_turu.ekipman_turu }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
+      </li>
+      {% endfor %}
+      <p> </p>
+      <a href="/giris/ekipman_turu/create"> Ekipman Türü Ekle </a>
+    </ul>
+    {% else %}
+      <p>Kayıtlı ekipman türü yok ....</p>
+      <p> </p>
+      <a href="/giris/ekipman_turu/create"> Ekipman Türü Ekle </a>
+    {% endif %}
+
+{% endblock %}

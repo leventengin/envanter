@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Servis Listesi</h1>
+
+    {% if servis_list %}
+    <ul>
+
+      {% for servis in servis_list %}
+      <li>
+        <a href="{{servis.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{servis.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
+              &emsp;   ({{servis.id}})    <a href="{{servis.id}}">{{ servis.servis_adi }}</a>
+        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
+      </li>
+      {% endfor %}
+      <p> </p>
+      <a href="/giris/servis/create"> Servis Ekle </a>
+    </ul>
+    {% else %}
+      <p>Kayıtlı servis yok ....</p>
+      <p> </p>
+      <a href="/giris/servis/create"> Servis Ekle </a>
+    {% endif %}
+
+{% endblock %}
