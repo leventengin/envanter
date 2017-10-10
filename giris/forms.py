@@ -6,6 +6,7 @@ from django.contrib.admin.widgets import AdminDateWidget
 
 #from __future__ import unicode_literals
 from django.db import models
+from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -14,7 +15,15 @@ from bootstrap_datepicker.widgets import DatePicker
 import datetime
 from datetime import date
 
-
+from django.core import serializers
+from django.contrib.postgres.search import SearchVector
+from django.views.generic import FormView
+from django.shortcuts import render, redirect, get_object_or_404
+import datetime
+from datetime import date, datetime
+from django.template.loader import render_to_string
+#from flask import Flask, Response, request
+import requests
 
 
 
@@ -169,24 +178,63 @@ class Demirbas_Ara_Form(forms.Form):
 
 
 class HareketForm(forms.Form):
-    sakli_proj = forms.CharField(required=False, widget=forms.HiddenInput())
+    dem_id = forms.IntegerField(label='Demirbaş id....:', disabled=True, required=False )
+    dem_adi = forms.CharField(label='Demirbaş adı....:', disabled=True, required=False)
+    dem_proj = forms.CharField(label='Mevcut proje....:', disabled=True, required=False)
     har_tipi = forms.ChoiceField(label='Hareket tipi........:', widget=forms.Select, choices=TIPI,)
     sonraki_proj = forms.ModelChoiceField(label='Sonraki proje.......:', queryset=proje.objects.all())
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
+    hidd_proje = forms.CharField(required=False, widget=forms.HiddenInput())
+
+
+    #def __init__(self, *args, **kwargs):
+        #dem_pk = kwargs.pop('dem_pk', None)
+        #super(HareketForm, self).__init__(*args, **kwargs)
+        #obje = get_object_or_404(demirbas, pk=dem_pk)
+        #obje = demirbas.objects.filter(id=dem_pk)
+        #self.fields['dem_id'].initial = dem_pk
+        #self.fields['dem_adi'].initial = obje.demirbasadi
+        #self.fields['dem_proj'].initial = obje.proje
+        #self.fields['hidd_proje'].initial = obje.proje
+        #self.fields['dem_adi'].initial = demirbas.objects.filter(id=dem_pk)
+        #self.fields['dem_proj'].initial = demirbas.proje.filter(id=dem_pk)
+        #self.fields['hidd_proje'].initial = demirbas.proje.filter(id=dem_pk)
+
+    #def clean_sonraki_proj(self):
+    #    aa_sonraki_proj = self.cleaned_data.get("sonraki_proj")
+    #    aa_dem_proj = self.cleaned_data.get("dem_proj")
+    #    a = str(aa_sonraki_proj)
+    #    print("dem_proje", aa_dem_proj)
+    #    print("aaaa", a)
+    #    if (aa_dem_proj == a):
+    #        raise forms.ValidationError(" iki proje aynı olamaz.... ", )
+
+
+    #def numara_al(request):
+    #    cc_pk = request.session['aa_pk']
+    #    print("oldu olacak....:", cc_pk)
+    #    return(cc_pk)
 
     def clean(self):
         cleaned_data = super(HareketForm, self).clean()
-        cc_sakli_proj = cleaned_data.get("sakli_proj")
-        cc_har_tipi = cleaned_data.get("har_tipi")
-        cc_sonraki_proj = cleaned_data.get("sonraki_proj")
-        cc_aciklama = cleaned_data.get("aciklama")
-        cc_sonraki_proj_id = cleaned_data.get("sonraki_proj.id")
-        print ("saklı proje...:", cc_sakli_proj)
-        print ("sonraki proje....", cc_sonraki_proj)
-        print ("sonraki proje..id", cc_sonraki_proj_id)
-        print (cc_har_tipi, cc_aciklama)
-        if (cc_sakli_proj == cc_sonraki_proj):
-            raise forms.ValidationError(" iki proje aynı olamaz.... ")
+        cc_dem_id = self.cleaned_data.get("dem_id")
+        cc_dem_adi = self.cleaned_data.get("dem_adi")
+        cc_dem_proje = self.cleaned_data.get("dem_proje")
+        cc_har_tipi = self.cleaned_data.get("har_tipi")
+        cc_sonraki_proj = self.cleaned_data.get("sonraki_proj")
+        cc_aciklama = self.cleaned_data.get("aciklama")
+        cc_hidd_proje = self.cleaned_data.get("hidd_proje")
+        #if 'aa_pk' in request.session:
+        #cc_pk = request.session.get('aa_pk')
+        #print("cc_pk ,  aktarılan değer....:", aa_pk)
+        #a = str(cc_sonraki_proj)
+        #if (cc_hidd_proje == a):
+        #    HareketForm(dem_pk=pk)
+        #    self.add_error("sonraki_proj", "iki proje aynı olamaz.......")
+        #return cleaned_data
+        #   raise forms.ValidationError(" iki proje aynı olamaz.... ", )
+
+
 
 
 class Hareket_Ara_Form(forms.Form):
@@ -196,24 +244,31 @@ class Hareket_Ara_Form(forms.Form):
 class ArizaForm(forms.Form):
     pk_no = forms.IntegerField(required=False, widget=forms.HiddenInput())
     ariza_adi = forms.CharField(label='Arıza Adı..:', max_length=100)
+    #proje = forms.ModelChoiceField(label='Proje..:', queryset=proje.objects.all())
     demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
-    servis = forms.ModelChoiceField(label='servis Adı..:', queryset=servis.objects.all())
-    yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yedek_parca.objects.all())
-    yedek_parca_2 = forms.ModelChoiceField(label='Yedek parça -2........:', queryset=yedek_parca.objects.all())
-    yedek_parca_3 = forms.ModelChoiceField(label='Yedek parça -3........:', queryset=yedek_parca.objects.all())
-    yedek_parca_4 = forms.ModelChoiceField(label='Yedek parça -4........:', queryset=yedek_parca.objects.all())
-    yedek_parca_5 = forms.ModelChoiceField(label='Yedek parça -5........:', queryset=yedek_parca.objects.all())
-    kayit_acilis = forms.DateField(label='Kayıt açılış tarihi...:', required=False,
+    servis = forms.ModelChoiceField(label='Servis Adı..:', queryset=servis.objects.all())
+    yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_2 = forms.ModelChoiceField(label='Yedek parça -2........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_3 = forms.ModelChoiceField(label='Yedek parça -3........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_4 = forms.ModelChoiceField(label='Yedek parça -4........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_5 = forms.ModelChoiceField(label='Yedek parça -5........:', queryset=yedek_parca.objects.all(), required=False)
+    kayit_acilis = forms.DateField(label='Kayıt açılış tarihi...:', required=True,
         widget=forms.TextInput(attrs={ 'class':'datepicker',})
         )
-    kayit_kapanis = forms.DateField(label='Kayıt kapanış tarihi...:', required=False,
+    kayit_kapanis = forms.DateField(label='Kayıt kapanış tarihi...:', required=True,
         widget=forms.TextInput(attrs={ 'class':'datepicker',})
         )
     tutar = forms.IntegerField(label='Tutarı...:', min_value=0)
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
+    def __init__(self, *args, **kwargs):
+        proje_sec = kwargs.pop('proje_sec', None)
+        super(ArizaForm, self).__init__(*args, **kwargs)
+        if proje:
+            self.fields['demirbas'].queryset = demirbas.objects.filter(proje=proje_sec)
+
 
     def clean(self):
-        cleaned_data = super(HareketForm, self).clean()
+        cleaned_data = super(ArizaForm, self).clean()
         cc_ariza_adi = cleaned_data.get("ariza_adi")
         cc_servis = cleaned_data.get("servis")
         cc_yedek_parca_1 = cleaned_data.get("yedek_parca_1")

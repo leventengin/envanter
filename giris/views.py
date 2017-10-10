@@ -23,6 +23,10 @@ from .forms import NameForm
 import datetime
 from datetime import date, datetime
 from django.template.loader import render_to_string
+import requests
+from django import forms
+from django.http import HttpResponse, HttpResponseRedirect
+
 
 
 
@@ -282,13 +286,35 @@ def demirbas_guncelle(request, pk=None):
 
 
 @login_required
-def demirbas_sil(request, object_id):
-    return render(request, 'demirbas_sil_soru.html')
+def demirbas_sil(request, pk=None):
+    print("demirbaş sildeki pk:", pk)
+    object = get_object_or_404(demirbas, pk=pk)
+    sil_demirbas = object.demirbasadi
+    sil_id = object.id
+    har_obje = hareket.objects.filter(demirbas_id=object.id)
+    ar_obje = ariza.objects.filter(demirbas=object.id)
+    har_count = har_obje.count()
+    ar_count = ar_obje.count()
+    print(" hareket......", har_count)
+    print(" ariza.....", ar_count)
+
+    if har_count != 0 or ar_count != 0:
+        return render(request, 'giris/demirbas_silemezsin.html',)
+
+    print("sil_demirbas", sil_demirbas)
+    print("sil_id", sil_id)
+    args = {'sil_id': sil_id, 'sil_demirbas': sil_demirbas, 'pk': pk,}
+    return render(request, 'giris/demirbas_sil_soru.html', args)
 
 @login_required
-def demirbas_sil_kesin(request, object_id):
-    object = get_object_or_404(Model, pk=object_id)
-    object.delete()
+def demirbas_sil_kesin(request, pk=None):
+    print("demirbaş sil kesindeki pk:", pk)
+    object = get_object_or_404(demirbas, pk=pk)
+    try:
+        object.delete()
+    except ProtectedError:
+        error_message = "bağlantılı veri var,  silinemez...!!"
+        return JsonResponse(error_message)
     messages.success(request, 'Başarıyla silindi....')
     return redirect('demirbas')
 
@@ -337,6 +363,9 @@ def demirbas_ara(request):
 @login_required
 def hareket_yarat(request, pk=None):
     obje = get_object_or_404(demirbas, pk=pk)
+    #request.session['aa_pk'] = pk
+    #cc_pk = request.session['aa_pk']
+    #print ("aa_pk.....:", cc_pk)
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = HareketForm(request.POST)
@@ -359,11 +388,30 @@ def hareket_yarat(request, pk=None):
             print ("aciklama", dd_aciklama)
             print ("kullanici", kullanici)
             print ("yaratildi", yaratildi)
-            #import pdb; pdb.set_trace()
+
+
+            if str(dd_mevcut_proj_id) == str(dd_sonraki_proj):
+                        deneme_1 = obje.id
+                        deneme_2 = obje.demirbasadi
+                        deneme_3 = obje.proje
+                        deneme_4 = "iki proje aynı olamaz...."
+                        form = HareketForm()
+                        form.fields["hidd_proje"].initial = obje.proje
+                        form.fields["dem_id"].initial = obje.id
+                        form.fields["dem_adi"].initial = obje.demirbasadi
+                        form.fields["dem_proj"].initial = obje.proje
+                        form.fields["har_tipi"].initial = dd_har_tipi
+                        form.fields["sonraki_proj"].initial = dd_sonraki_proj
+                        form.fields["aciklama"].initial = dd_aciklama
+                        args = {'form': form, 'deneme_1': deneme_1, 'deneme_2': deneme_2, 'deneme_3': deneme_3, 'deneme_4': deneme_4 }
+                        return render(request, 'giris/hareket_yarat.html', args)
+
+
             obje_demirbas = get_object_or_404(demirbas, pk=pk)
 
 
             kaydetme_obj = hareket(demirbas_id_id = obje_demirbas.id,
+                                   demirbas_adi = obje_demirbas.demirbasadi,
                                    har_tipi = dd_har_tipi,
                                    mevcut_proj_id = dd_mevcut_proj_id,
                                    sonraki_proj_id = dd_sonraki_proj,
@@ -399,24 +447,26 @@ def hareket_yarat(request, pk=None):
             return render(request, 'giris/hareket_yarat.html', {'form': form})
     # if a GET (or any other method) we'll create a blank form
     else:
-
+    # for GET ....form is intialized
         print ("en başta pk yı doğru alıyor mu ???..", pk)
-        #obje = get_object_or_404(demirbas, pk=pk)
         deneme_1 = obje.id
         deneme_2 = obje.demirbasadi
         deneme_3 = obje.proje
+        deneme_4 = ""
         form = HareketForm()
-        form.fields["sakli_proj"].initial = obje.proje
-        #deneme_giris_QS = deneme_giris.objects.all().order_by('-tarih')
-        return render(request, 'giris/hareket_yarat.html', {'form': form, 'deneme_1': deneme_1, 'deneme_2': deneme_2, 'deneme_3': deneme_3,})
+        form.fields["hidd_proje"].initial = obje.proje
+        form.fields["dem_id"].initial = obje.id
+        form.fields["dem_adi"].initial = obje.demirbasadi
+        form.fields["dem_proj"].initial = obje.proje
+        args = {'form': form, 'deneme_1': deneme_1, 'deneme_2': deneme_2, 'deneme_3': deneme_3, 'deneme_4': deneme_4}
+        return render(request, 'giris/hareket_yarat.html', args)
 
 
 
 @login_required
 def hareket_guncelle(request, pk=None):
     obje = get_object_or_404(hareket, pk=pk)
-    form = HareketForm(request.POST or None,
-                        request.FILES or None, instance=obj)
+    form = HareketForm(request.POST or None, request.FILES or None,)
     if request.method == 'POST':
         if form.is_valid():
             dd_demirbas_id = request.POST.get('demirbas_id', "")
@@ -436,8 +486,15 @@ def hareket_guncelle(request, pk=None):
             print ("kullanici", kullanici)
             print ("yaratildi", yaratildi)
             #import pdb; pdb.set_trace()
-            kaydetme_obj = hareket(id=pk, demirbas_id = dd_demirbas_id, demirbas_adi = dd_demirbas_adi, har_tipi = dd_har_tipi,
-                mevcut_proj_id = dd_mevcut_proj, sonraki_proj_id = dd_sonraki_proj, aciklama = dd_aciklama, kullanici = kullanici, yaratildi = yaratildi)
+            kaydetme_obj = hareket(id=pk,
+                                   demirbas_id_id = dd_demirbas_id,
+                                   demirbas_adi = dd_demirbas_adi,
+                                   har_tipi = dd_har_tipi,
+                                   mevcut_proj_id = dd_mevcut_proj,
+                                   sonraki_proj_id = dd_sonraki_proj,
+                                   aciklama = dd_aciklama,
+                                   kullanici = kullanici,
+                                   yaratildi = yaratildi)
             kaydetme_obj.save()
             messages.success(request, 'Başarıyla güncelledi....')
             return redirect('hareket')
@@ -445,13 +502,12 @@ def hareket_guncelle(request, pk=None):
             return render(request, 'giris/hareket_list.html', {'form': form})
     else:
         form = HareketForm()
-        form.fields["pk_no"].initial = obje.id
-        form.fields["demirbas_id"].initial = obje.demirbas_id
-        form.fields["demirbas_adi"].initial = obje.demirbas_adi
-        form.fields["har_tipi"].initial = obje.proje
-        form.fields["mevcut_proj"].initial = obje.bolum
-        form.fields["sonraki_proj"].initial = obje.marka
-        form.fields["aciklama"].initial = obje.ekipman_turu
+        form.fields["dem_id"].initial = obje.demirbas_id
+        form.fields["dem_adi"].initial = obje.demirbas_adi
+        form.fields["har_tipi"].initial = obje.har_tipi
+        form.fields["dem_proj"].initial = obje.mevcut_proj
+        form.fields["sonraki_proj"].initial = obje.sonraki_proj
+        form.fields["aciklama"].initial = obje.aciklama
         return render(request, 'giris/hareket_list.html', {'form': form})
 
 
@@ -461,10 +517,16 @@ def hareket_sil(request, object_id):
     return render(request, 'hareket_sil_soru.html')
 
 
+from django.db.models import ProtectedError
+
 @login_required
 def hareket_sil_kesin(request, object_id):
     object = get_object_or_404(Model, pk=object_id)
-    object.delete()
+    try:
+        object.delete()
+    except ProtectedError:
+        error_message = "This object can't be deleted!!"
+        return JsonResponse(error_message)
     messages.success(request, 'Başarıyla silindi....')
     return redirect('hareket')
 
@@ -546,11 +608,18 @@ def ariza_yarat(request):
             print ("kullanici", kullanici)
             print ("yaratildi", yaratildi)
             #import pdb; pdb.set_trace()
-            kaydetme_obj = ariza(ariza_adi = dd_ariza_adi, demirbas_id = dd_demirbas,  servis_id = dd_servis,
-                yedek_parca_1_id = dd_yedek_parca_1, yedek_parca_2_id = dd_yedek_parca_2, yedek_parca_3_id = dd_yedek_parca_3,
-                modeli = dd_modeli, durum = dd_durumu, gar_varmi = dd_garanti_varmi,
-                yedek_parca_4_id = dd_yedek_parca_4, yedek_parca_5_id = dd_yedek_parca_5, tutar = dd_tutar,
-                aciklama = dd_aciklama, kullanici = kullanici, yaratildi = yaratildi)
+            kaydetme_obj = ariza(ariza_adi = dd_ariza_adi,
+                                 demirbas_id = dd_demirbas,
+                                 servis_id = dd_servis,
+                                 yedek_parca_1_id = dd_yedek_parca_1,
+                                 yedek_parca_2_id = dd_yedek_parca_2,
+                                 yedek_parca_3_id = dd_yedek_parca_3,
+                                 yedek_parca_4_id = dd_yedek_parca_4,
+                                 yedek_parca_5_id = dd_yedek_parca_5,
+                                 tutar = dd_tutar,
+                                 aciklama = dd_aciklama,
+                                 kullanici = kullanici,
+                                 yaratildi = yaratildi)
             kaydetme_obj.save()
             #text = form.cleaned_data["demirbasadi"]
             form = ArizaForm()
@@ -564,7 +633,7 @@ def ariza_yarat(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = ArizaForm()
+        form = ArizaForm(proje_sec=2)
         #deneme_giris_QS = deneme_giris.objects.all().order_by('-tarih')
         #args = {'form': form, 'deneme_giris_QS': deneme_giris_QS}
         #return render(request, '/giris/demirbas_yarat.html', args)
@@ -578,13 +647,110 @@ def ariza_yarat(request):
 def ariza_guncelle(request, pk=None):
     obj = get_object_or_404(ariza, pk=pk)
     form = ArizaForm(request.POST or None,
-                        request.FILES or None, instance=obj)
+                        request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
            form.save()
            messages.success(request, 'Başarıyla güncelledi....')
            return redirect('ariza')
     return render(request, '/giris/ariza_list.html', {'form': form})
+
+
+
+@login_required
+def ariza_guncelle(request, pk=None):
+    obje = get_object_or_404(ariza, pk=pk)
+    print("ariza guncelle", pk)
+    print(obje)
+    print(obje.ariza_adi)
+    print(obje.demirbas)
+    print("...........")
+    print(request.user)
+    print(request.user.id)
+
+    if request.method == 'POST':
+        print("post  .....", pk)
+        form = ArizaForm(request.POST or None, request.FILES or None)
+        #dd_garanti_bitis = None
+        if form.is_valid():
+            dd_ariza_adi = request.POST.get('ariza_adi', "")
+            dd_demirbas = request.POST.get('demirbas', "")
+            dd_servis = request.POST.get('servis', "")
+            dd_yp1 = request.POST.get('yedek_parca_1', "")
+            dd_yp2 = request.POST.get('yedek_parca_2', "")
+            dd_yp3 = request.POST.get('yedek_parca_3', "")
+            dd_yp4 = request.POST.get('yedek_parca_4', "")
+            dd_yp5 = request.POST.get('yedek_parca_5', "")
+            dd_ac = request.POST.get('kayit_acilis', "")
+            dd_kapa = request.POST.get('kayit_kapanis', "")
+            dd_tutar = request.POST.get('tutar', "")
+            dd_aciklama = request.POST.get('aciklama', "")
+            kullanici = request.user.id
+            yaratildi = datetime.now()
+            print ("arıza adı", dd_ariza_adi)
+            print ("demirbas", dd_demirbas)
+            print ("servis", dd_servis)
+            print ("yp1", dd_yp1)
+            print ("yp2", dd_yp2)
+            print ("yp3", dd_yp3)
+            print ("yp4", dd_yp4)
+            print ("yp5", dd_yp5)
+            print ("kayıt açılış", dd_ac)
+            print ("kayıt kapanış", dd_kapa)
+            print ("tutar", dd_tutar)
+            print ("aciklama", dd_aciklama)
+            print ("kullanici", kullanici)
+            print ("yaratildi", yaratildi)
+            #import pdb; pdb.set_trace()
+            kaydetme_obj = ariza(id=pk,
+                                ariza_adi = dd_ariza_adi,
+                                demirbas_id = dd_demirbas,
+                                servis_id = dd_servis,
+                                yedek_parca_1_id = dd_yp1,
+                                yedek_parca_2_id = dd_yp2,
+                                yedek_parca_3_id = dd_yp3,
+                                yedek_parca_4_id = dd_yp4,
+                                yedek_parca_5_id = dd_yp5,
+                                kayit_acilis = dd_ac,
+                                kayit_kapanis = dd_kapa,
+                                tutar = dd_tutar,
+                                aciklama = dd_aciklama,
+                                kullanici = kullanici,
+                                yaratildi = yaratildi)
+            kaydetme_obj.save()
+            messages.success(request, 'Başarıyla güncelledi....')
+            return redirect('ariza')
+        else:
+
+            return render(request, 'giris/ariza_yarat.html', {'form': form})
+
+
+    else:
+        print("get .....", pk)
+        print("obje.id...:", obje.id)
+        form = ArizaForm(proje_sec=1)
+        form.fields["pk_no"].initial = obje.id
+        form.fields["ariza_adi"].initial = obje.ariza_adi
+        form.fields["demirbas"].initial = obje.demirbas
+        form.fields["servis"].initial = obje.servis
+        form.fields["yedek_parca_1"].initial = obje.yedek_parca_1
+        form.fields["yedek_parca_2"].initial = obje.yedek_parca_2
+        form.fields["yedek_parca_3"].initial = obje.yedek_parca_3
+        form.fields["yedek_parca_4"].initial = obje.yedek_parca_4
+        form.fields["yedek_parca_5"].initial = obje.yedek_parca_5
+        form.fields["kayit_acilis"].initial = obje.kayit_acilis
+        form.fields["kayit_kapanis"].initial = obje.kayit_kapanis
+        form.fields["tutar"].initial = obje.tutar
+        form.fields["aciklama"].initial = obje.aciklama
+
+        args = {'form': form,}
+        return render(request, 'giris/ariza_yarat.html', args)
+
+
+
+
+
+
 
 
 @login_required
@@ -907,7 +1073,7 @@ class Yedek_parcaDetailView(LoginRequiredMixin,generic.DetailView):
 
 class HareketListView(LoginRequiredMixin,generic.ListView):
     model = hareket
-    #paginate_by = 20
+    paginate_by = 20
 
 class HareketDetailView(LoginRequiredMixin,generic.DetailView):
     model = hareket

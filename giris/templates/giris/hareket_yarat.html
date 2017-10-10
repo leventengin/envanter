@@ -44,16 +44,16 @@
 
 <body>
 
-<h3>    Taşıma  İşlemi   </h3>
-
-<h5> Demirbaş  id ....  {{ deneme_1 }}  </h5>
-<h5> Demirbaş adı ....  {{ deneme_2 }} </h5>
-<h5> Mevcut proje ....  {{ deneme_3 }}  </h5>
 
 
+  <h3>    Taşıma  İşlemi   </h3>
+
+
+  <h5>  {{ deneme_4 }}  </h5>
 
 
   <form action="" method="post">
+
       {% csrf_token %}
       {{ form.as_p }}
       <input type="submit" value="gir" />

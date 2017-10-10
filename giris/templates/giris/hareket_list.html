@@ -1,26 +1,36 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Taşıma Listesi</h1>
+    <h1>Taşıma işlemleri listesi</h1>
 
     {% if hareket_list %}
     <ul>
 
       {% for hareket in hareket_list %}
       <li>
+        <!--
         <a href="{{hareket.id}}/sil"><span class='glyphicon glyphicon-remove'></span></a>
         <a href="{{hareket.id}}/guncelle"><span class='glyphicon glyphicon-pencil'></span></a>
-              &emsp;   ({{hareket.id}})    <a href="{{hareket.id}}">{{ hareket.demirbas }}</a>
+      -->
+              &emsp;   ({{hareket.id}})    <a href="{{hareket.id}}">{{ hareket.demirbas_id }}</a>
+            <!--  &emsp;    <a>{{ hareket.demirbas_id }}</a>  -->
+              &emsp;    <a>{{ hareket.har_tipi }}</a>
+              &emsp;    <a>{{ hareket.mevcut_proj }}</a>
+              &emsp;    <a>{{ hareket.sonraki_proj }}</a>
+              &emsp;    <a>{{ hareket.kullanici }}</a>
+              &emsp;    <a>{{ hareket.yaratildi }}</a>
+              &emsp;    <a>{{ hareket.aciklama }}</a>
+
         <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
       </li>
       {% endfor %}
       <p> </p>
-      <a href="/giris/hareket/yarat"> Demirbaş Ekle </a>
+      <!-- <a href="/giris/hareket/yarat"> Taşıma Ekle </a>  -->
     </ul>
     {% else %}
       <p>Kayıtlı taşıma yok ....</p>
       <p> </p>
-      <a href="/giris/hareket/yarat"> Taşıma Ekle </a>
+      <!-- <a href="/giris/hareket/yarat"> Taşıma Ekle </a>  -->
     {% endif %}
 
 {% endblock %}

@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^demirbas/(?P<pk>\d+)$', views.DemirbasDetailView.as_view(), name='demirbas-detail'),
     url(r'^demirbas/yarat/$', views.demirbas_yarat, name='demirbas_yarat'),
     url(r'^demirbas/(?P<pk>\d+)/guncelle/$', views.demirbas_guncelle, name='demirbas_guncelle'),
+    url(r'^demirbas/(?P<pk>\d+)/sil/kesin/$', views.demirbas_sil_kesin, name='demirbas_sil_kesin'),
     url(r'^demirbas/(?P<pk>\d+)/sil/$', views.demirbas_sil, name='demirbas_sil'),
     url(r'^demirbas/aktar$', views.get_name, name='get_name'),
     url(r'^demirbas_ara$', views.demirbas_ara, name='demirbas_ara'),

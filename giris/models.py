@@ -113,7 +113,7 @@ class yedek_parca(models.Model):
     yparca_adi = models.CharField(max_length=200)
     alt_kategori = models.ForeignKey(alt_kategori, on_delete=models.PROTECT)
     def __str__(self):
-        return(self.yedek_parca)
+        return(self.yparca_adi)
 
 class musteri(models.Model):
     musteri_adi = models.CharField(max_length=200)
@@ -169,7 +169,7 @@ class hareket(models.Model):
     kullanici = models.CharField(max_length=100, default='admin')
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
-        return(self.demirbas)
+        return(self.demirbas_adi)
 
 
 
@@ -177,13 +177,13 @@ class ariza(models.Model):
     ariza_adi = models.CharField(max_length=200)
     demirbas = models.ForeignKey(demirbas, on_delete=models.PROTECT)
     servis = models.ForeignKey(servis, on_delete=models.PROTECT)
-    yedek_parca_1 = models.ForeignKey(yedek_parca, related_name='ilk_parca', on_delete=models.PROTECT, blank=True)
-    yedek_parca_2 = models.ForeignKey(yedek_parca, related_name='ikinci_parca', on_delete=models.PROTECT, blank=True)
-    yedek_parca_3 = models.ForeignKey(yedek_parca, related_name='ucuncu_parca', on_delete=models.PROTECT, blank=True)
-    yedek_parca_4 = models.ForeignKey(yedek_parca, related_name='dorduncu_parca', on_delete=models.PROTECT, blank=True)
-    yedek_parca_5 = models.ForeignKey(yedek_parca, related_name='besinci_parca', on_delete=models.PROTECT, blank=True)
-    kayit_acilis = models.DateField(default=date.today, blank=True)
-    kayit_kapanis = models.DateField(default=date.today, blank=True)
+    yedek_parca_1 = models.ForeignKey(yedek_parca, related_name='ilk_parca', on_delete=models.PROTECT, blank=True, null=True)
+    yedek_parca_2 = models.ForeignKey(yedek_parca, related_name='ikinci_parca', on_delete=models.PROTECT, blank=True, null=True)
+    yedek_parca_3 = models.ForeignKey(yedek_parca, related_name='ucuncu_parca', on_delete=models.PROTECT, blank=True, null=True)
+    yedek_parca_4 = models.ForeignKey(yedek_parca, related_name='dorduncu_parca', on_delete=models.PROTECT, blank=True, null=True)
+    yedek_parca_5 = models.ForeignKey(yedek_parca, related_name='besinci_parca', on_delete=models.PROTECT, blank=True, null=True)
+    kayit_acilis = models.DateField(default=date.today,)
+    kayit_kapanis = models.DateField(default=date.today,)
     tutar = models.PositiveIntegerField()
     aciklama = models.TextField()
     kullanici = models.CharField(max_length=100, default='admin')
