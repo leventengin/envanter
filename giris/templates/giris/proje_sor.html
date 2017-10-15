@@ -1,0 +1,42 @@
+
+
+
+
+{% extends "base_generic.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<!doctype html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+
+<body>
+
+  <form action="" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="ara...." />
+  </form>
+
+
+
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+
+
+</body>
+
+
+</html>
+{% endblock %}

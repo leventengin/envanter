@@ -12,7 +12,7 @@ from giris.models import marka, demirbas, kategori, proje, musteri, deneme_giris
 from giris.models import grup, sirket, ekipman_turu, servis, alt_kategori, yedek_parca, hareket, ariza
 from giris.forms import MarkaForm, DemirbasForm, KategoriForm, MusteriForm, ProjeForm, Demirbas_Ara_Form
 from giris.forms import GrupForm, SirketForm, Ekipman_turuForm, ServisForm, Alt_kategoriForm, Yedek_parcaForm
-from giris.forms import HareketForm, ArizaForm, Hareket_Ara_Form, Ariza_Ara_Form
+from giris.forms import HareketForm, ArizaForm, Hareket_Ara_Form, Ariza_Ara_Form, Proje_SorForm
 
 from django.core import serializers
 from django.utils.translation import ugettext_lazy as _
@@ -26,6 +26,8 @@ from django.template.loader import render_to_string
 import requests
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
+
 
 
 
@@ -355,6 +357,30 @@ def demirbas_ara(request):
 
 
 
+class demirbas_sec(forms.TextInput):
+    class Media:
+        print("demirbas_sec class...:")
+        js = ('giris/js/dem_sec.js')
+
+
+def yparca_sec(request):
+    print("selam buraya geldik.... yparca_sec")
+    response_data ={}
+    if request.method == 'GET':
+        selected = request.GET.get('selected', None)
+        print("selected...:", selected)
+        if selected != None:
+            obj = demirbas.objects.get(id=selected)
+            selected_altkat = obj.alt_kategori
+            print("selected_altkat", selected_altkat)
+            obj2 = yedek_parca.objects.get(alt_kategori=selected_altkat)
+            selected_yparca = obj2.yparca_adi
+            print("selected_yparca", selected_yparca)
+            response_data['selected_yparca'] = selected_yparca
+            print("sonuna geldik...", response_data)
+    return JsonResponse(response_data)
+
+
 
 
 
@@ -572,6 +598,40 @@ def hareket_ara(request):
 
 
 
+def proje_sor(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = Proje_SorForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+
+            proje_no = request.POST.get('hangi_proje', "")
+
+            print ("hangi proje ...:", proje_no)
+
+
+            form = ArizaForm(proje_no=proje_no)
+            #dem_qs = demirbas.objects.filter(proje=proje_no)
+            args = {'form': form, 'proje_no': proje_no}
+            return render(request, 'giris/ariza_yarat.html', args)
+
+            #return redirect('get_name')
+        else:
+            return render(request, 'giris/proje_sor.html', {'form': form})
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = Proje_SorForm()
+
+        args = {'form': form, }
+
+        return render(request, 'giris/proje_sor.html', args)
+
+
+
+
 #ariza yaratma işlemi .......
 
 @login_required
@@ -633,7 +693,7 @@ def ariza_yarat(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = ArizaForm(proje_sec=2)
+        form = ArizaForm()
         #deneme_giris_QS = deneme_giris.objects.all().order_by('-tarih')
         #args = {'form': form, 'deneme_giris_QS': deneme_giris_QS}
         #return render(request, '/giris/demirbas_yarat.html', args)

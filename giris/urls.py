@@ -93,6 +93,7 @@ urlpatterns = [
 
     # yedek_parça urlleri aşağıda....
     url(r'^yedek_parca/$', views.Yedek_parcaListView.as_view(), name='yedek_parca'),
+    url(r'^demirbas/yedek_parca_listesi/$', views.yparca_sec, name='yparca_sec'),
     url(r'^yedek_parca/(?P<pk>\d+)$', views.Yedek_parcaDetailView.as_view(), name='yedek_parca-detail'),
     url(r'^yedek_parca/create/$', views.Yedek_parcaCreate.as_view(), name='yedek_parca_create'),
     url(r'^yedek_parca/(?P<pk>\d+)/update/$', views.Yedek_parcaUpdate.as_view(), name='yedek_parca_update'),
@@ -112,7 +113,8 @@ urlpatterns = [
     # arıza urlleri aşağıda....
     url(r'^ariza/$', views.ArizaListView.as_view(), name='ariza'),
     url(r'^ariza/(?P<pk>\d+)$', views.ArizaDetailView.as_view(), name='ariza-detail'),
-    url(r'^ariza/yarat/$', views.ariza_yarat, name='ariza_yarat'),
+    url(r'^ariza/yarat/$', views.proje_sor, name='proje_sor'),
+    #url(r'^ariza/yarat/$', views.ariza_yarat, name='ariza_yarat'),
     url(r'^ariza/(?P<pk>\d+)/guncelle/$', views.ariza_guncelle, name='ariza_guncelle'),
     url(r'^ariza/(?P<pk>\d+)/sil/$', views.ariza_sil, name='ariza_sil'),
     url(r'^ariza_ara$', views.ariza_ara, name='ariza_ara'),

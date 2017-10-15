@@ -80,11 +80,12 @@ FATURA_DURUMU = (
 
 class NameForm(forms.Form):
     your_name = forms.CharField(label='senin adın......:', max_length=100)
-    tarih = forms.DateField(label='senin tarihin...:',
-        widget=forms.TextInput(attrs={ 'class':'datepicker' }),
-        #widget=forms.DateInput(format='%d/%m/%Y'),
-        #input_formats=('%d/%m/%Y',)
-        )
+    tarih = forms.DateField(label='senin tarihin...:', widget=forms.TextInput(attrs={ 'class':'datepicker' }))
+    demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
+    yedek_parca = forms.ModelChoiceField(label='Yedek parça ........:', queryset=yedek_parca.objects.all(),
+                        widget=forms.TextInput(attrs={ 'class':'myFunction' }))
+    #deneme = forms.CharField(label='hadi ..:',  widget=forms.TextInput(attrs={ 'class':'myFunction' }))
+
     def clean(self):
         cleaned_data = super(NameForm, self).clean()
         cc_name = cleaned_data.get("your_name")
@@ -173,7 +174,11 @@ class DemirbasForm(forms.Form):
 class Demirbas_Ara_Form(forms.Form):
     alan = forms.CharField(label='demirbaş adında arama..', widget=forms.Textarea(attrs={'cols': 30, 'rows': 1}),)
 
-
+class Proje_SorForm(forms.Form):
+    hangi_proje = forms.ModelChoiceField(label='Proje seçin.......:', queryset=proje.objects.all())
+    def clean(self):
+        cleaned_data = super(Proje_SorForm, self).clean()
+        cc_hangi_proje = self.cleaned_data.get("hangi_proje")
 
 
 
@@ -187,33 +192,6 @@ class HareketForm(forms.Form):
     hidd_proje = forms.CharField(required=False, widget=forms.HiddenInput())
 
 
-    #def __init__(self, *args, **kwargs):
-        #dem_pk = kwargs.pop('dem_pk', None)
-        #super(HareketForm, self).__init__(*args, **kwargs)
-        #obje = get_object_or_404(demirbas, pk=dem_pk)
-        #obje = demirbas.objects.filter(id=dem_pk)
-        #self.fields['dem_id'].initial = dem_pk
-        #self.fields['dem_adi'].initial = obje.demirbasadi
-        #self.fields['dem_proj'].initial = obje.proje
-        #self.fields['hidd_proje'].initial = obje.proje
-        #self.fields['dem_adi'].initial = demirbas.objects.filter(id=dem_pk)
-        #self.fields['dem_proj'].initial = demirbas.proje.filter(id=dem_pk)
-        #self.fields['hidd_proje'].initial = demirbas.proje.filter(id=dem_pk)
-
-    #def clean_sonraki_proj(self):
-    #    aa_sonraki_proj = self.cleaned_data.get("sonraki_proj")
-    #    aa_dem_proj = self.cleaned_data.get("dem_proj")
-    #    a = str(aa_sonraki_proj)
-    #    print("dem_proje", aa_dem_proj)
-    #    print("aaaa", a)
-    #    if (aa_dem_proj == a):
-    #        raise forms.ValidationError(" iki proje aynı olamaz.... ", )
-
-
-    #def numara_al(request):
-    #    cc_pk = request.session['aa_pk']
-    #    print("oldu olacak....:", cc_pk)
-    #    return(cc_pk)
 
     def clean(self):
         cleaned_data = super(HareketForm, self).clean()
@@ -261,10 +239,11 @@ class ArizaForm(forms.Form):
     tutar = forms.IntegerField(label='Tutarı...:', min_value=0)
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
     def __init__(self, *args, **kwargs):
-        proje_sec = kwargs.pop('proje_sec', None)
+        proje_no = kwargs.pop('proje_no', None)
+        print("proje no init te", proje_no)
         super(ArizaForm, self).__init__(*args, **kwargs)
-        if proje:
-            self.fields['demirbas'].queryset = demirbas.objects.filter(proje=proje_sec)
+        if proje_no:
+            self.fields['demirbas'].queryset = demirbas.objects.filter(proje=proje_no)
 
 
     def clean(self):

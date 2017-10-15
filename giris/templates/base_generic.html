@@ -19,6 +19,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
+
   <!-- Add additional CSS in static file -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -28,7 +29,7 @@
   <link rel="stylesheet" href="{% static 'contrib/bootstrap.css' %}">
   <link rel="stylesheet" href="{% static 'contrib/font-awesome.min.css' %}">
   <script src="{% static 'contrib/bootstrap.js' %}"></script>
-
+  <script type="text/javascript" src="{{ STATIC_URL }} /js/jquery.js">  </script>
 
   <style>
   a:link, a:visited, a:active {
@@ -40,6 +41,23 @@
   text-decoration : underline;
   }
   </style>
+
+
+  <script>
+  $("form input[name='deneme']").click(function () {
+      deneme = demirbas;
+  });
+  </script>
+
+
+  <script>
+    function sayhello(w) {
+      document.write("hello,  " + w);
+      }
+  </script>
+
+
+
 
 
 </head>
