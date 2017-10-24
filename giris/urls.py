@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^demirbas/(?P<pk>\d+)/sil/$', views.demirbas_sil, name='demirbas_sil'),
     url(r'^demirbas/aktar$', views.get_name, name='get_name'),
     url(r'^demirbas_ara$', views.demirbas_ara, name='demirbas_ara'),
-
+    url(r'^demirbas/yarat/demirbas_garanti/$', views.demirbas_garanti, name='demirbas_garanti'),
 
     # proje urlleri aşağıda....
     url(r'^proje/$', views.ProjeListView.as_view(), name='proje'),

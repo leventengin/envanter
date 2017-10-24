@@ -14,10 +14,81 @@
   <link rel="stylesheet" href="/resources/demos/style.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--
   <script>
+    function myFunction() {
+        var response = '';
+        var garanti_varmi = document.getElementById("id_garanti_varmi").value;
+        document.getElementById("id_bolum").value = garanti_varmi;
+        /* console.log(garanti_varmi); */
+        $.ajax({
+            url : "demirbas_garanti/",
+            type : "GET",
+            dataType: "text",
+            data : { 'garanti_varmi' : garanti_varmi, },
+            success: function(text) { response = "text"; },
+            failure: function() { alert('hata var....veri aktarılamadı...'); }
+          });  /* ajax kapa...*/
+         alert("şimdi burdan !!!!!!");
+         window.location.reload();
+    }
+  </script>
+-->
+  <script>
+    function formatNumber () {
+        var deger = document.getElementById("id_bedeli").value;
+        var b = parseInt(deger);
+        alert("format number çalıştı...");
+        alert(deger);
+        alert(b);
+        /*if not ( b == NaN )
+          { alert("data is integer"); }
+        else
+          { alert("data is not an integer"); }; */
+        sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+        document.getElementById("id_bedeli").value = sonuc;
+        }
+  </script>
 
+
+  <script>
+    function myFunction() {
+        alert(" myFunction çalıştı.....");
+        var garanti_varmi = document.getElementById("id_garanti_varmi").value;
+        /*document.getElementById("id_bolum").value = garanti_varmi;*/
+        /* console.log(garanti_varmi); */
+        if ( garanti_varmi == "H" )
+          {
+            /*document.getElementById("id_bolum").value = "X";*/
+            document.getElementById('id_garanti_bitis').value = "";
+            document.getElementById('id_garanti_bitis').style.display = 'none';
+           }
+        else
+          {
+            /*document.getElementById("id_bolum").value = "Y";*/
+            document.getElementById('id_garanti_bitis').style.display = '';
+          }
+
+    }
+  </script>
+
+
+
+  <script>
+    $( ".myFunction" ).myFunction()
+    } );
+  </script>
+
+  <script>
+    $( ".formatNumber" ).formatNumber()
+    } );
+  </script>
+
+
+
+
+  <script>
   $( function() {
-
   $.datepicker.regional['tr'] = {
     monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran',
     'Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
@@ -44,9 +115,48 @@
 
 <body>
 
-  <form action="" method="post">
+
+  <script>
+      $(document).ready(function(){
+          alert ("hadi bakalım....");
+          myFunction();
+          /*formatNumber();*/
+           });  /* document ready  kapanıyor */
+  </script>
+
+
+
+
+  <script>
+      $(document).ready(function(){
+             $("#id_garanti_varmi").change(function(){
+                  alert ( "hadi  şimdi...garanti var mı çalıştı...");
+                  myFunction();
+             });   /*  change  kapanıyor ...  */
+           });  /* document ready  kapanıyor */
+  </script>
+
+
+  <script>
+      $(document).ready(function(){
+             $("#id_bedeli").change(function(){
+                  alert ( "hadi  şimdi...bedeli çalıştı...");
+                  formatNumber();
+             });   /*  change  kapanıyor ...  */
+           });  /* document ready  kapanıyor */
+  </script>
+
+
+
+
+
+
+
+  <form  action="" method="post" novalidate>
       {% csrf_token %}
-      {{ form.as_p }}
+      <table border="1" class="fkenar">
+        {{ form }}
+      </table>
       <input type="submit" value="gir" />
   </form>
 

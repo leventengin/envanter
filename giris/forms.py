@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from giris.models import marka, demirbas, proje, kategori, musteri
+from giris.models import marka, demirbas, proje, kategori, musteri, yp_choice
 from giris.models import grup, sirket, ekipman_turu, servis, alt_kategori, yedek_parca, hareket, ariza
 from django.contrib.admin.widgets import AdminDateWidget
 
@@ -75,15 +75,55 @@ FATURA_DURUMU = (
 ('T', 'Tamamlandı'),
 )
 
+#json_choices = [('--------','-----------'),]
 
+#def get_my_choices():
+    # you place some logic here
+#    bir_sefer = request.session['bir_sefer']
+#    if bir_sefer == 0:
+#    json_choices = [('------------','------------'),]
+#        request.session['bir_sefer'] = 1
+#    else:
+#        json_choices = [('aaaaaaaaaa','aaaaaaaaaa'),]
+#    return json_choices
 
+json_choices =[('a','a'),]
 
 class NameForm(forms.Form):
+    #json_choices.insert('0',('',' önce demirbaş seç...'))
+    gizli = forms.CharField(required=False, )
     your_name = forms.CharField(label='senin adın......:', max_length=100)
     tarih = forms.DateField(label='senin tarihin...:', widget=forms.TextInput(attrs={ 'class':'datepicker' }))
     demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
-    yedek_parca = forms.ModelChoiceField(label='Yedek parça ........:', queryset=yedek_parca.objects.all(),
-                        widget=forms.TextInput(attrs={ 'class':'myFunction' }))
+    #yedek_parca = forms.ModelChoiceField(label='Yedek parça ........:', queryset=yedek_parca.objects.all(),
+    #                    widget=forms.TextInput(attrs={ 'class':'myFunction' }))
+    yparca_choice = forms.ChoiceField(label='Yedek parça choice ile ........:',
+            widget=forms.Select, choices=json_choices)
+    yedek_parca = forms.ModelChoiceField(label='Yedek parça...:', queryset=yp_choice.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super(NameForm, self).__init__(*args, **kwargs)
+        print("initial içinden birinci merhaba....:")
+        print("gizliyi initial içinden gizli yaz ...:", self.fields['gizli'])
+        a = str(self.fields['gizli'])
+        print("aaaaa....haydi bre...", a)
+        if self.fields['gizli'] == "A":
+            print("initial içinden merhaba...", )
+            json_choices = [('--------','-----------'),]
+            self.fields['yparca_choice'] = forms.ChoiceField(choices=json_choices)
+            self.fields['gizli'].initial = "X"
+
+
+    #def __init__(self, *args, **kwargs):
+    #    self.request = kwargs.pop('request', None)
+    #    qs = yp_choice.objects.all()
+    #    print("qs...init in içinde..", qs)
+    #    super(NameForm, self).__init__(*args, **kwargs)
+    #    self.fields['yedek_parca'].queryset = qs
+
+
+
+
     #deneme = forms.CharField(label='hadi ..:',  widget=forms.TextInput(attrs={ 'class':'myFunction' }))
 
     def clean(self):
@@ -118,11 +158,11 @@ class DemirbasForm(forms.Form):
     modeli = forms.CharField(label='Modeli..:', max_length=100)
     durumu = forms.ChoiceField(label='Durumu........:', widget=forms.Select, choices=DURUM,)
     garanti_varmi = forms.ChoiceField(label='Garanti Var Mı.:',  widget=forms.Select, choices=VARMI,)
-    garanti_bitis = forms.DateField(label='Garanti Bitiş Tarihi...:', required=False,
-        widget=forms.TextInput(attrs={ 'class':'datepicker',})
-        )
-    amts_kalanyil = forms.IntegerField(label='Kalan Amortisman Yılı...:', min_value=0)
-    bedeli = forms.IntegerField(label='Bedeli...:', min_value=0)
+    garanti_bitis = forms.DateField(label='Gar. Bitiş Tarihi...:', required=False,
+                widget=forms.TextInput(attrs={ 'class': 'datepicker'}))
+    amts_kalanyil = forms.IntegerField(label='Kalan Amts Yılı...:', min_value=0)
+    bedeli = forms.CharField(label='Bedeli...:')
+    #bedeli = forms.CharField(label='Bedeli...:',widget=forms.TextInput(attrs={'type':'number'}))
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
 
     def clean(self):

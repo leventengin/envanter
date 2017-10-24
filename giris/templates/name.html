@@ -23,58 +23,106 @@
   <link rel="stylesheet" href="/resources/demos/style.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+-->
 
-  <script>
+<!--
+<script>
     $(document).ready(function(){
-      //$("li a").css("color", "red").css("font-size", "30px");
-          alert(".........");
-    });
-  </script>
+           $("#id_demirbas").change(function(){
+                alert("haydi be.....");
+           });   /*  change  kapanıyor ...  */
+         });  /* document ready  kapanıyor */
+</script>
+-->
+<!--
+<script>
+    $(document).ready(function(){
 
+                alert("haydi be....document ready sadece....");
 
+         });  /* document ready  kapanıyor */
+</script>
+-->
+
+<!--
 
 <script>
     $(document).ready(function(){
            $("#id_demirbas").change(function(){
-            var selected = document.getElementById("id_demirbas").value;
-            console.log(selected);
-            $.ajax({
+                 alert("haydi be..2...");
+              var aj_adi = document.getElementById("id_your_name").value;
+              var aj_tarihi = document.getElementById("id_tarih").value;
+              var selected = document.getElementById("id_demirbas").value;
+              console.log(selected);
+              $.ajax({
                 url : "yedek_parca_listesi/",
                 type : "GET",
                 dataType: "json",
                 data : {
+                  'aj_adi' : aj_adi
+                  'aj_tarihi' : aj_tarihi
                   'selected' : selected
-                },
-                success: function(json) {
-                  document.getElementById('id_yedek_parca').value=json.selected_yparca;
                   },
+                /* success: function(json) {  */
+                success: function(json) {
+                    /* document.getElementById('id_yedek_parca').value=json.response_data; */
+                    location.reload(true);
+                    /* alert('işlem tamam hadi hayırlısı...');  */
+                    },
                 failure: function(json) {
                     alert('hata var....veri aktarılamadı...');
-                }
-              });
-            });
-          });
+                    }
+                 });  /* ajax kapanıyor...  */
+                window.location.reload(true);
+            });   /*  change  kapanıyor ...  */
+          });  /* document ready  kapanıyor */
+</script>
+
+-->
+
+
+
+<script>
+  function myFunction() {
+      var response = '';
+      var aj_adi = document.getElementById("id_your_name").value;
+      var aj_tarihi = document.getElementById("id_tarih").value;
+      var selected = document.getElementById("id_demirbas").value;
+      var aj_gizli = document.getElementById("id_gizli").value;
+      document.getElementById("id_your_name").value = document.getElementById("id_demirbas").value;
+      console.log(selected);
+      $.ajax({
+        url : "yedek_parca_listesi/",
+        type : "GET",
+        dataType: "text",
+        data : {
+          'aj_adi' : aj_adi,
+          'aj_tarihi' : aj_tarihi,
+          'selected' : selected,
+          'aj_gizli' : aj_gizli,
+          },
+        success: function(text) {
+            response = "text";
+            },
+        failure: function() {
+            alert('hata var....veri aktarılamadı...');
+            }
+        });  /* ajax kapa...*/
+       alert(response);
+       window.location.reload();
+  }
+
 </script>
 
 
-
-
-
-  <script>
-  function myFunction() {
-      var selected = document.getElementById("id_demirbas").value;
-      document.getElementById("id_yedek_parca").value = document.getElementById("id_demirbas").value;
-  }
-  </script>
-
-
-  <script>
+<script>
   $( ".myFunction" ).myFunction()
   } );
-  </script>
+</script>
 
 
-  <script>
+<script>
 
   $( function() {
     $.datepicker.regional['tr'] = {
@@ -95,7 +143,7 @@
       $( ".datepicker" ).datepicker()
   } );
 
-  </script>
+</script>
 
 
 
@@ -106,14 +154,15 @@
 
 
 <body>
-<!--
-  <script>
-    $("#id_deneme").on("click", function(){
-        alert("selam...");
-      });
-  </script>
--->
 
+
+  <script>
+      $(document).ready(function(){
+             $("#id_demirbas").change(function(){
+                  myFunction();
+             });   /*  change  kapanıyor ...  */
+           });  /* document ready  kapanıyor */
+  </script>
 
 
 
@@ -122,6 +171,8 @@
       {{ form.as_p }}
       <input type="submit" value="gir" />
   </form>
+
+  <p> denemesi buraya {{ response_data }} </p>
 
   <p> text denemesi buraya {{ text }} </p>
   <!--<h2> {{ deneme_giris_nesne }} </h2> -->

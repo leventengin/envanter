@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from giris.models import marka, demirbas, kategori, proje, musteri, deneme_giris
+from giris.models import marka, demirbas, kategori, proje, musteri, deneme_giris, yp_choice
 from giris.models import grup, sirket, ekipman_turu, servis, alt_kategori, yedek_parca, hareket, ariza
 from giris.forms import MarkaForm, DemirbasForm, KategoriForm, MusteriForm, ProjeForm, Demirbas_Ara_Form
 from giris.forms import GrupForm, SirketForm, Ekipman_turuForm, ServisForm, Alt_kategoriForm, Yedek_parcaForm
@@ -82,7 +82,7 @@ def get_name(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = NameForm()
-        #global deneme_giris_nesne
+        #request.session['bir_sefer'] = 0
         deneme_giris_QS = deneme_giris.objects.all().order_by('-tarih')
         args = {'form': form, 'deneme_giris_QS': deneme_giris_QS}
         #import pdb; pdb.set_trace()
@@ -363,25 +363,94 @@ class demirbas_sec(forms.TextInput):
         js = ('giris/js/dem_sec.js')
 
 
+import json
+from django.core import serializers
+
+
 def yparca_sec(request):
     print("selam buraya geldik.... yparca_sec")
     response_data ={}
+    yp_choice.objects.all().delete()
+    print("hepsi silindi, liste...:")
     if request.method == 'GET':
+        aj_adi = str(request.GET.get('aj_tarihi', None))
+        aj_tarihi = request.GET.get('aj_tarihi', None)
         selected = request.GET.get('selected', None)
+        aj_gizli = request.GET.get('aj_gizli', None)
+        print("aj_adi...:", aj_adi)
+        print("aj_tarihi...:", aj_tarihi)
         print("selected...:", selected)
+        print("aj_gizli", aj_gizli)
         if selected != None:
             obj = demirbas.objects.get(id=selected)
             selected_altkat = obj.alt_kategori
             print("selected_altkat", selected_altkat)
-            obj2 = yedek_parca.objects.get(alt_kategori=selected_altkat)
-            selected_yparca = obj2.yparca_adi
-            print("selected_yparca", selected_yparca)
-            response_data['selected_yparca'] = selected_yparca
-            print("sonuna geldik...", response_data)
-    return JsonResponse(response_data)
+            obj2 = yedek_parca.objects.filter(alt_kategori=selected_altkat)
+            print("obj2...:", obj2)
+
+            for yedek_parca.yparca_adi in obj2:
+                print("yedek parça...:", yedek_parca.yparca_adi)
+                kaydetme_obj = yp_choice(yp_choice = yedek_parca.yparca_adi)
+                kaydetme_obj.save()
+
+            #choice_list = [('--------','--------'),]
+            #for yedek_parca.yparca_adi in obj2:
+            #    print("yedek parça.iki..:", yedek_parca.yparca_adi)
+            #    choice_list.append((yedek_parca.yparca_adi, yedek_parca.yparca_adi),)
+            #print("choice list..:", choice_list)
 
 
 
+            #response_data = serializers.serialize('json', [obj2,])
+            response_data = list(obj2)
+            print("response data 1111...:", response_data)
+            form = NameForm()
+            if not (aj_gizli == "A"):
+                form.fields["gizli"].initial = "A"
+                print("gizlice bas onu...:", form.fields["gizli"].initial)
+            form.fields["your_name"].initial = aj_adi
+            form.fields["tarih"].initial = aj_tarihi
+            form.fields["demirbas"].initial = selected
+            form.fields["yedek_parca"].initial = None
+            form.fields["yedek_parca"].queryset = yp_choice.objects.all()
+            choice_list = [('aaaaaa','aaaaaa'),]
+            form.fields["yparca_choice"].choices = choice_list
+            #form.fields['gizli'].initial = 1
+            print("sonca...demce....:", form.fields["yparca_choice"].choices )
+            args = {'form': form,}
+            #return render(request, '/aktar.html', args)
+
+
+            #struct = json.loads(response_data)
+            #response_data = json.dumps(struct[0])
+            #print("response data 2222...:", response_data)
+    print ("son noktaya geliyor mu acaba", response_data)
+    return HttpResponse(response_data, content_type='application/json')
+            #selected_yparca = obj2
+            #print("selected_yparca", selected_yparca)
+            #response_data['selected_yparca'] = selected_yparca
+            #print("sonuna geldik...", response_data)
+    #return JsonResponse(response_data)
+
+
+
+def demirbas_garanti(request):
+    print("selam buraya geldik.... demirbas garanti")
+    response_data ={}
+    if request.method == 'GET':
+        garanti_varmi = str(request.GET.get('garanti_varmi', None))
+        print("garanti_varmi...:", garanti_varmi)
+        form = DemirbasForm()
+        if garanti_varmi == "H":
+            form.fields["garanti_bitis"].widget = forms.HiddenInput()
+            print("garanti_varmi ....hhhhh:", )
+            args = {'form': form,}
+        else:
+            form.fields["garanti_bitis"].widget = forms.TextInput()
+            print("garanti_varmi ....eeeee:", )
+            args = {'form': form,}
+    print ("son noktaya geliyor mu acaba", response_data)
+    return HttpResponse(response_data, content_type='application/json')
 
 
 #hareket  yaratma işlemi .......

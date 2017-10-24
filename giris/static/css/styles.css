@@ -16,6 +16,12 @@ body {
     background-color: #a2c3f9;
 }  */
 
+.fkenar {
+    border-style: solid;
+    border-color: #ff0000;
+}
+
+
 .navbar {
         background-color:#ffb266;
 /*        background-color:#FFFFFF;  */
@@ -23,7 +29,7 @@ body {
     }
 
 .navbar-fixed-left {
-  border-style: none; 
+  border-style: none;
   width: 140px;
 
 

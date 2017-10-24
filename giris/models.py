@@ -120,7 +120,10 @@ class musteri(models.Model):
     def __str__(self):
         return(self.musteri_adi)
 
-
+class yp_choice(models.Model):
+    yp_choice = models.CharField(max_length=200)
+    def __str__(self):
+        return(self.yp_choice)
 
 class proje(models.Model):
     proje_adi = models.TextField(max_length=200)
