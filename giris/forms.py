@@ -1,7 +1,9 @@
 from django import forms
 from django.forms import ModelForm
-from giris.models import marka, demirbas, proje, kategori, musteri, yp_choice
-from giris.models import grup, sirket, ekipman_turu, servis, alt_kategori, yedek_parca, hareket, ariza
+from giris.models import marka, demirbas, proje, kategori, musteri
+from giris.models import yparca_demirbas, yp_choice, yparca_ariza, dem_ariza
+from giris.models import grup, sirket, ekipman_turu, servis, alt_kategori, yedek_parca
+from giris.models import hareket, ariza
 from django.contrib.admin.widgets import AdminDateWidget
 
 #from __future__ import unicode_literals
@@ -22,7 +24,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 import datetime
 from datetime import date, datetime
 from django.template.loader import render_to_string
-#from flask import Flask, Response, request
 import requests
 
 
@@ -165,6 +166,9 @@ class DemirbasForm(forms.Form):
     #bedeli = forms.CharField(label='Bedeli...:',widget=forms.TextInput(attrs={'type':'number'}))
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
 
+
+
+
     def clean(self):
         cleaned_data = super(DemirbasForm, self).clean()
         cc_pk = cleaned_data.get("pk_no")
@@ -183,6 +187,10 @@ class DemirbasForm(forms.Form):
         cc_aciklama = cleaned_data.get("aciklama")
         print ("pk...önemli...:", cc_pk)
         print (cc_adi, cc_proje, cc_bedeli, cc_garanti_varmi, cc_garanti_bitis)
+        try:
+            cc = int(cc_bedeli)
+        except:
+            raise forms.ValidationError(" lütfen proje bedeli alanına sayı giriniz.... ")
         #if cc_garanti_varmi and cc_garanti_bitis:
             # Only do something if both fields are valid so far.
         #conv_date = cc_garanti_bitis.strftime('%Y-%m-%d')
@@ -206,6 +214,7 @@ class DemirbasForm(forms.Form):
                 raise forms.ValidationError(
                     " garanti bitiş tarihi boş olmalı.... "
                 )
+
 
 
 
@@ -261,15 +270,15 @@ class Hareket_Ara_Form(forms.Form):
 
 class ArizaForm(forms.Form):
     pk_no = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    proje = forms.ModelChoiceField(label='Proje..:', queryset=proje.objects.all())
+    demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=dem_ariza.objects.all())
     ariza_adi = forms.CharField(label='Arıza Adı..:', max_length=100)
-    #proje = forms.ModelChoiceField(label='Proje..:', queryset=proje.objects.all())
-    demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
     servis = forms.ModelChoiceField(label='Servis Adı..:', queryset=servis.objects.all())
-    yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yedek_parca.objects.all(), required=False)
-    yedek_parca_2 = forms.ModelChoiceField(label='Yedek parça -2........:', queryset=yedek_parca.objects.all(), required=False)
-    yedek_parca_3 = forms.ModelChoiceField(label='Yedek parça -3........:', queryset=yedek_parca.objects.all(), required=False)
-    yedek_parca_4 = forms.ModelChoiceField(label='Yedek parça -4........:', queryset=yedek_parca.objects.all(), required=False)
-    yedek_parca_5 = forms.ModelChoiceField(label='Yedek parça -5........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yparca_ariza.objects.all(), required=False)
+    yedek_parca_2 = forms.ModelChoiceField(label='Yedek parça -2........:', queryset=yparca_ariza.objects.all(), required=False)
+    yedek_parca_3 = forms.ModelChoiceField(label='Yedek parça -3........:', queryset=yparca_ariza.objects.all(), required=False)
+    yedek_parca_4 = forms.ModelChoiceField(label='Yedek parça -4........:', queryset=yparca_ariza.objects.all(), required=False)
+    yedek_parca_5 = forms.ModelChoiceField(label='Yedek parça -5........:', queryset=yparca_ariza.objects.all(), required=False)
     kayit_acilis = forms.DateField(label='Kayıt açılış tarihi...:', required=True,
         widget=forms.TextInput(attrs={ 'class':'datepicker',})
         )

@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals
 from django.db import models
+from django.contrib.auth.models import User
 from datetime import datetime, date
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -122,8 +123,29 @@ class musteri(models.Model):
 
 class yp_choice(models.Model):
     yp_choice = models.CharField(max_length=200)
+    #kullanici =  models.OneToOneField(User, on_delete=models.CASCADE,)
     def __str__(self):
         return(self.yp_choice)
+
+class yparca_ariza(models.Model):
+    yparca_ariza = models.CharField(max_length=200)
+    kullanici =  models.ForeignKey(User, on_delete=models.CASCADE,)
+    def __str__(self):
+        return(self.yparca_ariza)
+
+class dem_ariza(models.Model):
+    dem_ariza = models.CharField(max_length=200)
+    kullanici =  models.ForeignKey(User, on_delete=models.CASCADE)
+    alt_kategori = models.ForeignKey(alt_kategori, on_delete=models.CASCADE)
+    def __str__(self):
+        return(self.dem_ariza)
+
+class yparca_demirbas(models.Model):
+    yparca_demirbas = models.CharField(max_length=200)
+    kullanici =  models.ForeignKey(User, on_delete=models.CASCADE,)
+    def __str__(self):
+        return(self.yparca_demirbas)
+
 
 class proje(models.Model):
     proje_adi = models.TextField(max_length=200)

@@ -41,9 +41,9 @@
         alert("format number çalıştı...");
         alert(deger);
         alert(b);
-        /*if not ( b == NaN )
-          { alert("data is integer"); }
-        else
+        if not ( b == NaN ) { alert("data is integer"); }
+
+        /*else
           { alert("data is not an integer"); }; */
         sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
         document.getElementById("id_bedeli").value = sonuc;
@@ -159,6 +159,8 @@
       </table>
       <input type="submit" value="gir" />
   </form>
+
+
 
   <!--
   <h5> text denemesi buraya {{ text }} </h5>

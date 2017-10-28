@@ -113,8 +113,10 @@ urlpatterns = [
     # arıza urlleri aşağıda....
     url(r'^ariza/$', views.ArizaListView.as_view(), name='ariza'),
     url(r'^ariza/(?P<pk>\d+)$', views.ArizaDetailView.as_view(), name='ariza-detail'),
-    url(r'^ariza/yarat/$', views.proje_sor, name='proje_sor'),
-    #url(r'^ariza/yarat/$', views.ariza_yarat, name='ariza_yarat'),
+    #url(r'^ariza/yarat/$', views.proje_sor, name='proje_sor'),
+    url(r'^ariza/yarat/$', views.ariza_yarat, name='ariza_yarat'),
+    url(r'^ariza/yarat/demirbas_ariza_listesi/$', views.demirbas_ariza_listesi, name='demirbas_ariza_listesi'),
+    url(r'^ariza/yarat/yedekparca_ariza_listesi/$', views.yedekparca_ariza_listesi, name='yedekparca_ariza_listesi'),
     url(r'^ariza/(?P<pk>\d+)/guncelle/$', views.ariza_guncelle, name='ariza_guncelle'),
     url(r'^ariza/(?P<pk>\d+)/sil/$', views.ariza_sil, name='ariza_sil'),
     url(r'^ariza_ara$', views.ariza_ara, name='ariza_ara'),

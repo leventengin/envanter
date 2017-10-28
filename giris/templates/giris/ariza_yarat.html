@@ -14,10 +14,9 @@
   <link rel="stylesheet" href="/resources/demos/style.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
   <script>
-
   $( function() {
-
   $.datepicker.regional['tr'] = {
     monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran',
     'Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
@@ -31,24 +30,112 @@
     prevText: 'Önce',
     nextText: 'Sonra',
     isRTL: false};
-
   $.datepicker.setDefaults($.datepicker.regional['tr']);
   $( ".datepicker" ).datepicker()
-
-
   } );
-
   </script>
+
+  <script>
+    function prosecFunction() {
+        var response = '';
+        var selected = document.getElementById("id_proje").value;
+        console.log(selected);
+        $.ajax({
+          url : "demirbas_ariza_listesi/",
+          type : "GET",
+          dataType: "text",
+          data : {
+            'selected' : selected,
+              },
+          success: function() {
+              response = "başarı........";
+              },
+          failure: function() {
+              alert('hata var....veri aktarılamadı...');
+              }
+          });  /* ajax kapa...*/
+         alert(response);
+         window.location.reload();
+    }
+  </script>
+
+  <script>
+    function demsecFunction() {
+        var response = '';
+        var selected = document.getElementById("id_demirbas").value;
+        console.log(selected);
+        $.ajax({
+          url : "yedekparca_ariza_listesi/",
+          type : "GET",
+          dataType: "text",
+          data : {
+            'selected' : selected,
+              },
+          success: function() {
+              response = "başarılı.....";
+              },
+          failure: function() {
+              alert('hata var....veri aktarılamadı...');
+              }
+          });  /* ajax kapa...*/
+         alert(response);
+         window.location.reload();
+    }
+  </script>
+
+
+
+    <script>
+      $( ".prosecFunction" ).prosecFunction()
+      } );
+    </script>
+
+    <script>
+      $( ".demsecFunction" ).demsecFunction()
+      } );
+    </script>
+
 </head>
+
 
 
 <body>
 
-  <form action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="gir" />
-  </form>
+<script>
+      $(document).ready(function(){
+             $("#id_proje").change(function(){
+                  alert ( "hadi  şimdi...prosec çalıştı...");
+                  prosecFunction();
+             });   /*  change  kapanıyor ...  */
+           });  /* document ready  kapanıyor */
+</script>
+
+
+<script>
+      $(document).ready(function(){
+             $("#id_demirbas").change(function(){
+                  alert ( "hadi  şimdi...demsec çalıştı...");
+                  demsecFunction();
+             });   /*  change  kapanıyor ...  */
+           });  /* document ready  kapanıyor */
+</script>
+
+
+
+
+
+
+
+
+<form  action="" method="post" novalidate>
+        {% csrf_token %}
+        <table border="1" class="fkenar">
+          {{ form }}
+        </table>
+        <input type="submit" value="gir" />
+</form>
+
+
 
   <!--
   <h5> text denemesi buraya {{ text }} </h5>
@@ -62,7 +149,7 @@
     <h5> </h5>
   {% endfor %}
   -->
- 
+
   {% if messages %}
     <ul class="messages">
       {% for message in messages %}

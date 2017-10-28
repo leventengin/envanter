@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from giris.models import marka, demirbas, kategori, proje, musteri, deneme_giris, yp_choice
+from giris.models import marka, demirbas, kategori, proje, musteri, deneme_giris, yp_choice, dem_ariza, yparca_ariza, yparca_demirbas
 from giris.models import grup, sirket, ekipman_turu, servis, alt_kategori, yedek_parca, hareket, ariza
 from giris.forms import MarkaForm, DemirbasForm, KategoriForm, MusteriForm, ProjeForm, Demirbas_Ara_Form
 from giris.forms import GrupForm, SirketForm, Ekipman_turuForm, ServisForm, Alt_kategoriForm, Yedek_parcaForm
@@ -370,7 +370,7 @@ from django.core import serializers
 def yparca_sec(request):
     print("selam buraya geldik.... yparca_sec")
     response_data ={}
-    yp_choice.objects.all().delete()
+    yparca_demirbas.objects.filter(kullanici=user.id).delete()
     print("hepsi silindi, liste...:")
     if request.method == 'GET':
         aj_adi = str(request.GET.get('aj_tarihi', None))
@@ -387,10 +387,12 @@ def yparca_sec(request):
             print("selected_altkat", selected_altkat)
             obj2 = yedek_parca.objects.filter(alt_kategori=selected_altkat)
             print("obj2...:", obj2)
+            print(user.id)
 
             for yedek_parca.yparca_adi in obj2:
                 print("yedek parça...:", yedek_parca.yparca_adi)
-                kaydetme_obj = yp_choice(yp_choice = yedek_parca.yparca_adi)
+                kaydetme_obj = yparca_demirbas(yparca_demirbas = yedek_parca.yparca_adi,
+                                               kullanici = user.id)
                 kaydetme_obj.save()
 
             #choice_list = [('--------','--------'),]
@@ -451,6 +453,8 @@ def demirbas_garanti(request):
             args = {'form': form,}
     print ("son noktaya geliyor mu acaba", response_data)
     return HttpResponse(response_data, content_type='application/json')
+
+
 
 
 #hareket  yaratma işlemi .......
@@ -712,8 +716,9 @@ def ariza_yarat(request):
         # check whether it's valid:
         if form.is_valid():
 
-            dd_ariza_adi = request.POST.get('ariza_adi', "")
+            dd_proje = request.POST.get('proje',"")
             dd_demirbas = request.POST.get('demirbas', "")
+            dd_ariza_adi = request.POST.get('ariza_adi', "")
             dd_servis = request.POST.get('servis', "")
             dd_yedek_parca_1 = request.POST.get('yedek_parca_1', "")
             dd_yedek_parca_2 = request.POST.get('yedek_parca_2', "")
@@ -723,9 +728,10 @@ def ariza_yarat(request):
             dd_tutar = request.POST.get('tutar', "")
             dd_aciklama = request.POST.get('aciklama', "")
             kullanici = request.user
-            yaratildi = date.today()
-            print ("ariza adı", dd_ariza_adi)
+            yaratildi = datetime.now
+            print ("proje", dd_proje)
             print ("demirbaş", dd_demirbas)
+            print ("ariza adı", dd_ariza_adi)
             print ("servis", dd_servis)
             print ("yedek parça 1", dd_yedek_parca_1)
             print ("yedek parça 2", dd_yedek_parca_2)
@@ -929,9 +935,77 @@ def ariza_ara(request):
         return render(request, 'giris/ariza_ara.html', {'form': form})
 
 
+def demirbas_ariza_listesi(request):
+    print("selam buraya geldik.... demirbas arıza listesi")
+    print("User.id.....:", request.user.id)
+    response_data ={}
+    dem_ariza.objects.filter(kullanici=request.user.id).delete()
+    print("hepsi silindi, liste...:")
+    if request.method == 'GET':
+        selected = request.GET.get('selected', None)
+        print("selected...:", selected)
+        if selected != None:
+            obj = demirbas.objects.filter(proje=selected)
+            #for demirbas.demirbasadi in obj:
+            #    print("aaa..:", demirbas.demirbasadi)
+            #    print("bbb...:", demirbas.alt_kategori)
+            print("demirbaslar...:", obj)
+            print("request.user.id...:", request.user.id)
+            print("User id...:", User.id)
+            user = User.objects.get(id=request.user.id)
+            #global alt_kategori
+            for demb in obj:
+                print("demirbas..adı.:", demb.demirbasadi)
+                print("demirbas alt kategori", demb.alt_kategori)
+                print("yeter ulan...", )
+                kaydetme_obj = dem_ariza(dem_ariza = demb.demirbasadi,
+                                         alt_kategori = demb.alt_kategori,
+                                         kullanici = user)
+                kaydetme_obj.save()
+            response_data = list(obj)
+            print("response data 1111...:", response_data)
+            form = ArizaForm()
+            form.fields["demirbas"].queryset = dem_ariza.objects.all()
+            args = {'form': form,}
+    print ("son noktaya geliyor mu acaba", response_data)
+    return HttpResponse(response_data, content_type='application/json')
 
 
 
+def yedekparca_ariza_listesi(request):
+    print("selam buraya geldik.... yedekparca_ariza_listesi")
+    response_data ={}
+    yparca_ariza.objects.filter(kullanici=request.user.id).delete()
+    print("hepsi silindi, liste...:")
+    if request.method == 'GET':
+        selected = request.GET.get('selected', None)
+        print("selected...:", selected)
+        if selected != None:
+            obj = dem_ariza.objects.get(id=selected)
+            selected_altkat = obj.alt_kategori
+            print("selected_altkat", selected_altkat)
+            obj2 = yedek_parca.objects.filter(alt_kategori=selected_altkat)
+            print("obj2...:", obj2)
+            #print(user.id)
+            user = User.objects.get(id=request.user.id)
+            for yedek_parca.yparca_adi in obj2:
+                print("yedek parça...:", yedek_parca.yparca_adi)
+                kaydetme_obj = yparca_ariza(yparca_ariza = yedek_parca.yparca_adi,
+                                            kullanici = user)
+                kaydetme_obj.save()
+
+            response_data = list(obj2)
+            print("response data 1111...:", response_data)
+            form = ArizaForm()
+            form.fields["yedek_parca_1"].queryset = yparca_ariza.objects.all()
+            form.fields["yedek_parca_2"].queryset = yparca_ariza.objects.all()
+            form.fields["yedek_parca_3"].queryset = yparca_ariza.objects.all()
+            form.fields["yedek_parca_4"].queryset = yparca_ariza.objects.all()
+            form.fields["yedek_parca_5"].queryset = yparca_ariza.objects.all()
+            print("sonca...demce....:",  )
+            args = {'form': form,}
+    print ("son noktaya geliyor mu acaba", response_data)
+    return HttpResponse(response_data, content_type='application/json')
 
 
 
