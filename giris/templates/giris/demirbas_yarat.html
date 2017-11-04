@@ -14,46 +14,35 @@
   <link rel="stylesheet" href="/resources/demos/style.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<!--
+
+
+
   <script>
-    function myFunction() {
-        var response = '';
-        var garanti_varmi = document.getElementById("id_garanti_varmi").value;
-        document.getElementById("id_bolum").value = garanti_varmi;
-        /* console.log(garanti_varmi); */
-        $.ajax({
-            url : "demirbas_garanti/",
-            type : "GET",
-            dataType: "text",
-            data : { 'garanti_varmi' : garanti_varmi, },
-            success: function(text) { response = "text"; },
-            failure: function() { alert('hata var....veri aktarılamadı...'); }
-          });  /* ajax kapa...*/
-         alert("şimdi burdan !!!!!!");
-         window.location.reload();
-    }
-  </script>
--->
-  <script>
-    function formatNumber () {
+    function formatNumber() {
+        alert("format number çalıştı...");
         var deger = document.getElementById("id_bedeli").value;
         var b = parseInt(deger);
-        alert("format number çalıştı...");
-        alert(deger);
-        alert(b);
-        if not ( b == NaN ) { alert("data is integer"); }
-
-        /*else
-          { alert("data is not an integer"); }; */
-        sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-        document.getElementById("id_bedeli").value = sonuc;
+        alert("deger"+deger);
+        alert("b"+b);
+        alert (isNaN(deger)+": a number");
+        if (isNaN(deger))
+            { alert("bedeli alanına sayı girmelisiniz..."); }
+        else
+            { alert("sayı değeri girildiği için doğru.......");
+              sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+              document.getElementById("id_bedeli").value = sonuc;
+              document.getElementById("id_bedeli_int").value = b;
+            }
+        /* sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+        document.getElementById("id_bedeli").value = sonuc; */
         }
   </script>
 
 
+
   <script>
     function myFunction() {
-        alert(" myFunction çalıştı.....");
+        /*alert(" myFunction çalıştı....."); */
         var garanti_varmi = document.getElementById("id_garanti_varmi").value;
         /*document.getElementById("id_bolum").value = garanti_varmi;*/
         /* console.log(garanti_varmi); */
@@ -75,13 +64,11 @@
 
 
   <script>
-    $( ".myFunction" ).myFunction()
-    } );
+    $( ".myFunction" ).myFunction();
   </script>
 
   <script>
-    $( ".formatNumber" ).formatNumber()
-    } );
+    $( ".formatNumber" ).formatNumber();
   </script>
 
 
@@ -115,22 +102,22 @@
 
 <body>
 
-
+<!--
   <script>
       $(document).ready(function(){
-          alert ("hadi bakalım....");
+          /* alert ("hadi bakalım...."); */
           myFunction();
           /*formatNumber();*/
            });  /* document ready  kapanıyor */
   </script>
-
+-->
 
 
 
   <script>
       $(document).ready(function(){
              $("#id_garanti_varmi").change(function(){
-                  alert ( "hadi  şimdi...garanti var mı çalıştı...");
+                  /* alert ( "hadi  şimdi...garanti var mı çalıştı..."); */
                   myFunction();
              });   /*  change  kapanıyor ...  */
            });  /* document ready  kapanıyor */
@@ -140,7 +127,7 @@
   <script>
       $(document).ready(function(){
              $("#id_bedeli").change(function(){
-                  alert ( "hadi  şimdi...bedeli çalıştı...");
+                  /*alert ( "hadi  şimdi...bedeli çalıştı...");*/
                   formatNumber();
              });   /*  change  kapanıyor ...  */
            });  /* document ready  kapanıyor */
@@ -154,7 +141,7 @@
 
   <form  action="" method="post" novalidate>
       {% csrf_token %}
-      <table border="1" class="fkenar">
+      <table border="0" class="fkenar">
         {{ form }}
       </table>
       <input type="submit" value="gir" />
@@ -162,28 +149,6 @@
 
 
 
-  <!--
-  <h5> text denemesi buraya {{ text }} </h5>
-  -->
-
-  <!--
-  {% for deneme_giris in deneme_giris_QS %}
-    <h5> yazı  {{ deneme_giris.yazi }} </h5>
-    <h5> kullanıcı  {{ deneme_giris.user.id}} </h5>
-    <h5> tarih    {{ deneme_giris.tarih }} </h5>
-    <h5> </h5>
-  {% endfor %}
-  -->
-
- <!--
-  {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
- -->
 
 
 </body>

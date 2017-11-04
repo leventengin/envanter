@@ -8,13 +8,16 @@
 <!--  buraya if konulacak ...-->
 
 
-      <h1>Arıza Sil</h1>
+      <h1>Arıza Kaydı Sil</h1>
 
-      <p>Bu arıza kaydını silmek istediğinizden emin misiniz: {{ demirbas }}?</p>
+      <p>Bu arıza kaydını silmek istediğinizden emin misiniz:</p>
+      <p><b>Arıza tanımı: </b>  {{ sil_ariza }}</p>
+      <p><b>Arıza id: </b>  &emsp;    {{ sil_id }}</p>
 
-      <form action="" method="POST">
-        {% csrf_token %}
-        <input type="submit" action="ariza_sil_kesin" value="Evet, sil.." />
+     <form action="" method="POST">
+          {% csrf_token %}
+          <a href="kesin"> Evet sil... </a>
       </form>
+
 
 {% endblock %}

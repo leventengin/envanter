@@ -19,13 +19,17 @@ urlpatterns = [
     url(r'^demirbas/aktar$', views.get_name, name='get_name'),
     url(r'^demirbas_ara$', views.demirbas_ara, name='demirbas_ara'),
     url(r'^demirbas/yarat/demirbas_garanti/$', views.demirbas_garanti, name='demirbas_garanti'),
+    url(r'^demirbas/proje/$', views.proje_sor, name='proje_sor'),
+    url(r'^demirbas/proje/(?P<pk>\d+)$', views.secili_proje, name='secili_proje'),
 
     # proje urlleri aşağıda....
     url(r'^proje/$', views.ProjeListView.as_view(), name='proje'),
     url(r'^proje/(?P<pk>\d+)$', views.ProjeDetailView.as_view(), name='proje-detail'),
     url(r'^proje/create/$', views.ProjeCreate.as_view(), name='proje_create'),
     url(r'^proje/(?P<pk>\d+)/update/$', views.ProjeUpdate.as_view(), name='proje_update'),
-    url(r'^proje/(?P<pk>\d+)/delete/$', views.ProjeDelete.as_view(), name='proje_delete'),
+    url(r'^proje/(?P<pk>\d+)/delete/$', views.proje_sil, name='proje_sil'),
+    url(r'^proje/(?P<pk>\d+)/delete/kesin/$', views.proje_sil_kesin, name='proje_sil_kesin'),
+
 
 
     # marka urlleri aşağıda....
@@ -33,7 +37,8 @@ urlpatterns = [
     url(r'^marka/(?P<pk>\d+)$', views.MarkaDetailView.as_view(), name='marka-detail'),
     url(r'^marka/create/$', views.MarkaCreate.as_view(), name='marka_create'),
     url(r'^marka/(?P<pk>\d+)/update/$', views.MarkaUpdate.as_view(), name='marka_update'),
-    url(r'^marka/(?P<pk>\d+)/delete/$', views.MarkaDelete.as_view(), name='marka_delete'),
+    url(r'^marka/(?P<pk>\d+)/delete/$', views.marka_sil, name='marka_sil'),
+    url(r'^marka/(?P<pk>\d+)/delete/kesin/$', views.demirbas_sil_kesin, name='demirbas_sil_kesin'),
 
 
 
@@ -42,7 +47,8 @@ urlpatterns = [
     url(r'^kategori/(?P<pk>\d+)$', views.KategoriDetailView.as_view(), name='kategori-detail'),
     url(r'^kategori/create/$', views.KategoriCreate.as_view(), name='kategori_create'),
     url(r'^kategori/(?P<pk>\d+)/update/$', views.KategoriUpdate.as_view(), name='kategori_update'),
-    url(r'^kategori/(?P<pk>\d+)/delete/$', views.KategoriDelete.as_view(), name='kategori_delete'),
+    url(r'^kategori/(?P<pk>\d+)/delete/$', views.kategori_sil, name='kategori_sil'),
+    url(r'^kategori/(?P<pk>\d+)/delete/kesin/$', views.kategori_sil_kesin, name='kategori_sil_kesin'),
 
 
     # müşteri urlleri aşağıda....
@@ -50,7 +56,8 @@ urlpatterns = [
     url(r'^musteri/(?P<pk>\d+)$', views.MusteriDetailView.as_view(), name='musteri-detail'),
     url(r'^musteri/create/$', views.MusteriCreate.as_view(), name='musteri_create'),
     url(r'^musteri/(?P<pk>\d+)/update/$', views.MusteriUpdate.as_view(), name='musteri_update'),
-    url(r'^musteri/(?P<pk>\d+)/delete/$', views.MusteriDelete.as_view(), name='musteri_delete'),
+    url(r'^musteri/(?P<pk>\d+)/delete/$', views.musteri_sil, name='musteri_sil'),
+    url(r'^musteri/(?P<pk>\d+)/delete/kesin/$', views.musteri_sil_kesin, name='musteri_sil_kesin'),
 
 
     # grup urlleri aşağıda....
@@ -58,21 +65,31 @@ urlpatterns = [
     url(r'^grup/(?P<pk>\d+)$', views.GrupDetailView.as_view(), name='grup-detail'),
     url(r'^grup/create/$', views.GrupCreate.as_view(), name='grup_create'),
     url(r'^grup/(?P<pk>\d+)/update/$', views.GrupUpdate.as_view(), name='grup_update'),
-    url(r'^grup/(?P<pk>\d+)/delete/$', views.GrupDelete.as_view(), name='grup_delete'),
+    url(r'^grup/(?P<pk>\d+)/delete/$', views.grup_sil, name='grup_sil'),
+    url(r'^grup/(?P<pk>\d+)/delete/kesin/$', views.grup_sil_kesin, name='grup_sil_kesin'),
+
+
 
     # şirket urlleri aşağıda....
     url(r'^sirket/$', views.SirketListView.as_view(), name='sirket'),
     url(r'^sirket/(?P<pk>\d+)$', views.SirketDetailView.as_view(), name='sirket-detail'),
     url(r'^sirket/create/$', views.SirketCreate.as_view(), name='sirket_create'),
     url(r'^sirket/(?P<pk>\d+)/update/$', views.SirketUpdate.as_view(), name='sirket_update'),
-    url(r'^sirket/(?P<pk>\d+)/delete/$', views.SirketDelete.as_view(), name='sirket_delete'),
+    url(r'^sirket/(?P<pk>\d+)/delete/$', views.sirket_sil, name='sirket_sil'),
+    url(r'^sirket/(?P<pk>\d+)/delete/kesin/$', views.sirket_sil_kesin, name='sirket_sil_kesin'),
+
+
+
 
     # ekipman_turu urlleri aşağıda....
     url(r'^ekipman_turu/$', views.Ekipman_turuListView.as_view(), name='ekipman_turu'),
     url(r'^ekipman_turu/(?P<pk>\d+)$', views.Ekipman_turuDetailView.as_view(), name='ekipman_turu-detail'),
     url(r'^ekipman_turu/create/$', views.Ekipman_turuCreate.as_view(), name='ekipman_turu_create'),
     url(r'^ekipman_turu/(?P<pk>\d+)/update/$', views.Ekipman_turuUpdate.as_view(), name='ekipman_turu_update'),
-    url(r'^ekipman_turu/(?P<pk>\d+)/delete/$', views.Ekipman_turuDelete.as_view(), name='ekipman_turu_delete'),
+    url(r'^ekipman_turu/(?P<pk>\d+)/delete/$', views.ekipman_turu_sil, name='ekipman_turu_sil'),
+    url(r'^ekipman_turu/(?P<pk>\d+)/delete/kesin/$', views.ekipman_turu_sil_kesin, name='ekipman_turu_sil_kesin'),
+
+
 
 
     # servis urlleri aşağıda....
@@ -80,7 +97,10 @@ urlpatterns = [
     url(r'^servis/(?P<pk>\d+)$', views.ServisDetailView.as_view(), name='servis-detail'),
     url(r'^servis/create/$', views.ServisCreate.as_view(), name='servis_create'),
     url(r'^servis/(?P<pk>\d+)/update/$', views.ServisUpdate.as_view(), name='servis_update'),
-    url(r'^servis/(?P<pk>\d+)/delete/$', views.ServisDelete.as_view(), name='servis_delete'),
+    url(r'^servis/(?P<pk>\d+)/delete/$', views.servis_sil, name='servis_sil'),
+    url(r'^servis/(?P<pk>\d+)/delete/kesin/$', views.servis_sil_kesin, name='servis_sil_kesin'),
+
+
 
 
     # alt_kategori urlleri aşağıda....
@@ -88,7 +108,9 @@ urlpatterns = [
     url(r'^alt_kategori/(?P<pk>\d+)$', views.Alt_kategoriDetailView.as_view(), name='alt_kategori-detail'),
     url(r'^alt_kategori/create/$', views.Alt_kategoriCreate.as_view(), name='alt_kategori_create'),
     url(r'^alt_kategori/(?P<pk>\d+)/update/$', views.Alt_kategoriUpdate.as_view(), name='alt_kategori_update'),
-    url(r'^alt_kategori/(?P<pk>\d+)/delete/$', views.Alt_kategoriDelete.as_view(), name='alt_kategori_delete'),
+    url(r'^alt_kategori/(?P<pk>\d+)/delete/$', views.alt_kategori_sil, name='alt_kategori_sil'),
+    url(r'^alt_kategori/(?P<pk>\d+)/delete/kesin/$', views.alt_kategori_sil_kesin, name='alt_kategori_sil_kesin'),
+
 
 
     # yedek_parça urlleri aşağıda....
@@ -97,31 +119,41 @@ urlpatterns = [
     url(r'^yedek_parca/(?P<pk>\d+)$', views.Yedek_parcaDetailView.as_view(), name='yedek_parca-detail'),
     url(r'^yedek_parca/create/$', views.Yedek_parcaCreate.as_view(), name='yedek_parca_create'),
     url(r'^yedek_parca/(?P<pk>\d+)/update/$', views.Yedek_parcaUpdate.as_view(), name='yedek_parca_update'),
-    url(r'^yedek_parca/(?P<pk>\d+)/delete/$', views.Yedek_parcaDelete.as_view(), name='yedek_parca_delete'),
+    url(r'^yedek_parca/(?P<pk>\d+)/delete/$', views.yedek_parca_sil, name='yedek_parca_sil'),
+    url(r'^yedek_parca/(?P<pk>\d+)/delete/kesin/$', views.yedek_parca_sil_kesin, name='yedek_parca_sil_kesin'),
+
+
 
 
     # hareket urlleri aşağıda....
     url(r'^hareket/$', views.HareketListView.as_view(), name='hareket'),
+    url(r'^hareket/yarat/js/$', views.proje_dem_js, name='proje_dem_js'),
     url(r'^hareket/(?P<pk>\d+)$', views.HareketDetailView.as_view(), name='hareket-detail'),
     url(r'^hareket/yarat/(?P<pk>\d+)$', views.hareket_yarat, name='hareket_yarat'),
+    url(r'^hareket/perteayir/(?P<pk>\d+)$', views.dem_perteayir, name='dem_perteayir'),
+    url(r'^hareket/perteayir/(?P<pk>\d+)/kesin/$', views.dem_perteayir_kesin, name='dem_perteayir_kesin'),
+    url(r'^hareket/devret/(?P<pk>\d+)$', views.dem_devret, name='dem_devret'),
+    url(r'^hareket/devret/(?P<pk>\d+)/kesin/$', views.dem_devret_kesin, name='dem_devret_kesin'),
     url(r'^hareket/(?P<pk>\d+)/guncelle/$', views.hareket_guncelle, name='hareket_guncelle'),
     url(r'^hareket/(?P<pk>\d+)/sil/$', views.hareket_sil, name='hareket_sil'),
     url(r'^hareket_ara$', views.hareket_ara, name='hareket_ara'),
+    url(r'^hareket/yarat/$', views.proje_dem_sor, name='proje_dem_sor'),
+
 
 
 
     # arıza urlleri aşağıda....
     url(r'^ariza/$', views.ArizaListView.as_view(), name='ariza'),
     url(r'^ariza/(?P<pk>\d+)$', views.ArizaDetailView.as_view(), name='ariza-detail'),
-    #url(r'^ariza/yarat/$', views.proje_sor, name='proje_sor'),
     url(r'^ariza/yarat/$', views.ariza_yarat, name='ariza_yarat'),
     url(r'^ariza/yarat/demirbas_ariza_listesi/$', views.demirbas_ariza_listesi, name='demirbas_ariza_listesi'),
     url(r'^ariza/yarat/yedekparca_ariza_listesi/$', views.yedekparca_ariza_listesi, name='yedekparca_ariza_listesi'),
     url(r'^ariza/(?P<pk>\d+)/guncelle/$', views.ariza_guncelle, name='ariza_guncelle'),
     url(r'^ariza/(?P<pk>\d+)/sil/$', views.ariza_sil, name='ariza_sil'),
     url(r'^ariza_ara$', views.ariza_ara, name='ariza_ara'),
-
-
+    url(r'^ariza/(?P<pk>\d+)/guncelle/demirbas_ariza_listesi_g/$', views.demirbas_ariza_listesi_g, name='demirbas_ariza_listesi_g'),
+    url(r'^ariza/(?P<pk>\d+)/guncelle/yedekparca_ariza_listesi_g/$', views.yedekparca_ariza_listesi_g, name='yedekparca_ariza_listesi_g'),
+    url(r'^ariza/(?P<pk>\d+)/sil/kesin/$', views.ariza_sil_kesin, name='ariza_sil_kesin'),
 
 
     ]

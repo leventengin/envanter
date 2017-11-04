@@ -2,6 +2,7 @@
 
 
 
+
 {% extends "base_generic.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
@@ -12,26 +13,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+  <title>jQuery UI Datepicker - Default functionality</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+
+
+  <script>
+  function hrefFunction() {
+    /*alert("href içindeyiz...")*/
+    var sel_proje = document.getElementById("id_hangi_proje").value;
+    /*alert("/giris/hareket/yarat/"+sel_dem);*/
+    window.location = "/giris/demirbas/proje/"+sel_proje;
+    return false;
+    }
+  </script>
+
+
+  <script>
+    $( ".hrefFunction" ).hrefFunction()
+    } );
+  </script>
+
+
+
+
+
+
+</head>
 
 <body>
 
-  <form action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="ara...." />
+
+
+
+  <form  action="" method="post" novalidate>
+          {% csrf_token %}
+          <table border="0" class="fkenar">
+            {{ form }}
+          </table>
   </form>
 
-
-
-  {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  <button onclick="return hrefFunction();">Seç</button>
 
 
 

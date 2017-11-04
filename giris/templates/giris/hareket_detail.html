@@ -1,18 +1,49 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Taşıma işlemi detay sayfası</h1>
+  <h3>Taşıma işlemi detay sayfası</h3>
 
-  <p><strong>id               :</strong> {{ hareket.id }}</p>
-  <p><strong>Demirbaş         :</strong> {{ hareket.demirbas }}</p>
-  <p><strong>Mevcut Proje     :</strong> {{ hareket.mevcut_proj }}</p>
-  <p><strong>Sonraki Proje    :</strong> {{ hareket.sonraki_proj }}</p>
-  <p><strong>Açıklama         :</strong> {{ hareket.aciklama }}</p>
-  <p><strong>Kullanıcı        :</strong> {{ hareket.kullanici }}</p>
-  <p><strong>Yaratıldı        :</strong> {{ hareket.yaratildi }}</p>
-  <p></p>
-  <p></p>
-  <p></p>
-  <!-- <a href="/giris/hareket/aktar"> Projeye aktar.. </a>  -->
+
+  <table border="0">
+        <tbody>
+            <tr>
+                <td><b>id..:</b></td>
+                <td> &emsp;     {{ hareket.id }}</td>
+            </tr>
+            <tr>
+                <td><b>Demirbaş..:   </b></td>
+                <td> &emsp;     {{ hareket.demirbas_id }}</td>
+            </tr>
+            <tr>
+                <td><b>Mevcut Proje..:</b></td>
+                <td>  &emsp;      {{ hareket.mevcut_proj }}</td>
+            </tr>
+            <tr>
+                <td><b>Sonraki Proje..: </b></td>
+                <td>   &emsp;       {{ hareket.sonraki_proj }}</td>
+            </tr>
+            <tr>
+                <td><b>Açıklama..: </b></td>
+                <td>   &emsp;         {{ hareket.aciklama }}</td>
+            </tr>
+            <tr>
+                <td><b>Kullanıcı..:  </b></td>
+                <td>   &emsp;             {{ hareket.kullanici }}</td>
+            </tr>
+            <tr>
+                <td><b>Yaratıldı..: </b></td>
+                <td>    &emsp;              {{ hareket.yaratildi }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
 
 {% endblock %}

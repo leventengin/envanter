@@ -1,32 +1,46 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Taşıma işlemleri listesi</h1>
+    <h3>Taşıma işlemleri listesi</h3>
 
     {% if hareket_list %}
-    <ul>
+    <!-- <ul> -->
+
+      <table border="0">
+        <tbody>
+
 
       {% for hareket in hareket_list %}
-      <li>
+       <!--  <li> -->
+
         <!--
         <a href="{{hareket.id}}/sil"><span class='glyphicon glyphicon-remove'></span></a>
         <a href="{{hareket.id}}/guncelle"><span class='glyphicon glyphicon-pencil'></span></a>
       -->
-              &emsp;   ({{hareket.id}})    <a href="{{hareket.id}}">{{ hareket.demirbas_id }}</a>
-            <!--  &emsp;    <a>{{ hareket.demirbas_id }}</a>  -->
-              &emsp;    <a>{{ hareket.har_tipi }}</a>
-              &emsp;    <a>{{ hareket.mevcut_proj }}</a>
-              &emsp;    <a>{{ hareket.sonraki_proj }}</a>
-              &emsp;    <a>{{ hareket.kullanici }}</a>
-              &emsp;    <a>{{ hareket.yaratildi }}</a>
-              &emsp;    <a>{{ hareket.aciklama }}</a>
+      <tr>
+          <td>&emsp;   ({{hareket.id}})  </td>
+          <td><a href="{{hareket.id}}">{{ hareket.demirbas_id }}</a></td>
+          <td>&emsp; &emsp;  {{ hareket.har_tipi }}</td>
+          <td>&emsp; &emsp;  {{ hareket.mevcut_proj }}</td>
+          <td>&emsp; &emsp;  {{ hareket.sonraki_proj }}</td>
 
-        <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
-      </li>
+      </tr>
+      <!--
+              &emsp;   ({{hareket.id}})
+              <a href="{{hareket.id}}">{{ hareket.demirbas_id }}</a>
+              &emsp; &emsp;   <a>{{ hareket.har_tipi }}</a>
+              &emsp; &emsp;   <a>{{ hareket.mevcut_proj }}</a>
+              &emsp; &emsp;   <a>{{ hareket.sonraki_proj }}</a>
+       -->
+
+
+      <!--  </li>  -->
       {% endfor %}
-      <p> </p>
-      <!-- <a href="/giris/hareket/yarat"> Taşıma Ekle </a>  -->
-    </ul>
+
+        </tbody>
+      </table>
+
+    <!-- </ul>  -->
     {% else %}
       <p>Kayıtlı taşıma yok ....</p>
       <p> </p>

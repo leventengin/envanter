@@ -3,16 +3,16 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Demirbaş Arama Sonuçları</h1>
+    <h3>Demirbaş Arama Sonuçları</h3>
 
     {% if demirbas_arama_filtresi %}
     <ul>
 
       {% for demirbas in demirbas_arama_filtresi %}
       <li>
-        <a href="demirbas/{{demirbas.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
-        <a href="demirbas/{{demirbas.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>
-              &emsp;   ({{demirbas.id}})    <a href="demirbas/{{demirbas.id}}">{{ demirbas.demirbasadi }}</a>
+      <!-- <a href="demirbas/{{demirbas.id}}/delete"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="demirbas/{{demirbas.id}}/update"><span class='glyphicon glyphicon-pencil'></span></a>  -->
+        &emsp;   ({{demirbas.id}})    <a href="demirbas/{{demirbas.id}}">{{ demirbas.demirbasadi }}</a>
         <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
       </li>
       {% endfor %}

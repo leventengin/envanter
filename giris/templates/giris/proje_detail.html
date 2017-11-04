@@ -1,11 +1,60 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Proje Sayfası</h1>
+  <h3>Proje Sayfası</h3>
 
-  <p><strong>Numarası:</strong> {{ proje.id }}</p>
-  <p><strong>Adı:</strong> {{ proje.proje_adi }}</p>
-  <p><strong>Marka:</strong> {{ proje.musteri }}</p>
-  <p><strong>Kategori:</strong> {{ proje.aciklama }}</p>
+    <table border="0">
+        <tbody>
+            <tr>
+                <td><b>id..........:</b></td>
+                <td> &emsp;     {{ proje.id }}</td>
+            </tr>
+            <tr>
+                <td><b>Proje adı......:   </b></td>
+                <td> &emsp;     {{ proje.proje_adi }}</td>
+            </tr>
+            <tr>
+                <td><b>Proje ili...:</b></td>
+                <td>  &emsp;      {{ proje.ili }}</td>
+            </tr>
+            <tr>
+                <td><b>Müşteri......: </b></td>
+                <td>   &emsp;       {{ proje.musteri }}</td>
+            </tr>
+            <tr>
+                <td><b>Şirket.........: </b></td>
+                <td>   &emsp;         {{ proje.sirket }}</td>
+            </tr>
+            <tr>
+                <td><b>Fatura türü.....:  </b></td>
+                <td>   &emsp;             {{ proje.fat_turu }}</td>
+            </tr>
+            <tr>
+                <td><b>Fatura durumu..: </b></td>
+                <td>    &emsp;              {{ proje.fat_durumu }}</td>
+            </tr>
+            <tr>
+                <td><b>Toplam ücret..: </b></td>
+                <td>   &emsp;         {{ proje.toplam_ucret }}</td>
+            </tr>
+            <tr>
+                <td><b>Açıklama.......:  </b></td>
+                <td>   &emsp;             {{ proje.aciklama }}</td>
+            </tr>
+            <tr>
+                <td><b>Kullanıcı........: </b></td>
+                <td>    &emsp;              {{ proje.kullanici }}</td>
+            </tr>
+            <tr>
+                <td><b>Yaratıldı..........: </b></td>
+                <td>   &emsp;         {{ proje.yaratildi }}</td>
+            </tr>
+            <tr>
+        </tbody>
+    </table>
+
+
+
+
 
 {% endblock %}

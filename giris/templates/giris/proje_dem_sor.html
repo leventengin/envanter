@@ -1,0 +1,102 @@
+
+
+
+
+{% extends "base_generic.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<!doctype html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Datepicker - Default functionality</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script>
+    function prosecFunction() {
+        var response = '';
+        var selected = document.getElementById("id_hangi_proje").value;
+        /*alert("buraya kadar geldi ... ajax"+selected);*/
+        console.log(selected);
+        $.ajax({
+          url : "js/",
+          type : "GET",
+          dataType: "text",
+          data : {
+            'selected' : selected,
+              },
+          success: function() {
+              /* alert("projeden demirbaş seçimi başarıyla çalıştı.."); */
+              window.location.reload();
+              },
+          failure: function() {
+              alert("hata var....veri aktarılamadı...");
+              }
+          });  /* ajax kapa...*/
+        /* window.location.reload(); */
+    }
+  </script>
+
+
+  <script>
+  function hrefFunction() {
+    /*alert("href içindeyiz...")*/
+    var sel_dem = document.getElementById("id_hangi_dem").value;
+    /*alert("/giris/hareket/yarat/"+sel_dem);*/
+    window.location = "/giris/hareket/yarat/"+sel_dem;
+    return false;
+    }
+  </script>
+
+
+  <script>
+    $( ".hrefFunction" ).hrefFunction()
+    } );
+  </script>
+
+
+
+      <script>
+        $( ".prosecFunction" ).prosecFunction()
+        } );
+      </script>
+
+
+</head>
+
+<body>
+
+
+  <script>
+        $(document).ready(function(){
+               $("#id_hangi_proje").change(function(){
+                    /*alert ( "hadi  şimdi...prosec çalıştı...");*/
+                    prosecFunction();
+               });   /*  change  kapanıyor ...  */
+             });  /* document ready  kapanıyor */
+  </script>
+
+
+
+  <form  action="" method="post" novalidate>
+          {% csrf_token %}
+          <table border="1" class="fkenar">
+            {{ form }}
+          </table>
+  </form>
+
+  <button onclick="return hrefFunction();">Seç</button>
+
+
+
+</body>
+
+
+</html>
+{% endblock %}

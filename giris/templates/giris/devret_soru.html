@@ -1,0 +1,28 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<!--  buraya if konulacak ...-->
+
+
+      <h1>Demirbaş devret</h1>
+
+      <p>Bu demirbaşı devretmek istediğinizden emin misiniz ???: </p>
+
+      <p> Adı : {{ devret }} </p>
+
+      <p> id : {{ devret_id }}</p>
+
+
+
+      <form action="" method="POST">
+        {% csrf_token %}
+      <!--<input type="submit" action="demirbas_sil_kesin" value="Evet, sil.." /> -->
+
+      <!-- <a href="giris/demirbas/{{ sil_id }}/kesin"> Evet sil... </a>  -->
+
+      <a href="kesin"> Evet devret... </a>
+      </form>
+
+{% endblock %}

@@ -38,13 +38,21 @@ VARMI = (
 ('H', 'Hayır'),
 )
 
+KIMIN = (
+('Ş', 'Şirketin'),
+('M', 'Müşterinin'),
+)
+
+KULLANIM_DURUMU = (
+('K', 'Kullanımda'),
+('P', 'Pert oldu'),
+('V', 'Proje sonunda müşteriye verildi'),
+('D', 'Depoda'),
+)
+
 TIPI = (
-('T', 'Taşıma'),
+('T', 'Diğer Projeye Taşı'),
 ('D', 'Depoya Taşı'),
-('P', 'Pert'),
-('G', 'Depodan Taşı'),
-('X', 'Pert İptal'),
-('Z', 'Proje Sonrası Verildi')
 )
 
 ILLER = (
@@ -76,23 +84,12 @@ FATURA_DURUMU = (
 ('T', 'Tamamlandı'),
 )
 
-#json_choices = [('--------','-----------'),]
-
-#def get_my_choices():
-    # you place some logic here
-#    bir_sefer = request.session['bir_sefer']
-#    if bir_sefer == 0:
-#    json_choices = [('------------','------------'),]
-#        request.session['bir_sefer'] = 1
-#    else:
-#        json_choices = [('aaaaaaaaaa','aaaaaaaaaa'),]
-#    return json_choices
 
 json_choices =[('a','a'),]
 
 class NameForm(forms.Form):
     #json_choices.insert('0',('',' önce demirbaş seç...'))
-    gizli = forms.CharField(required=False, )
+    gizli = forms.CharField(required=False, initial=None)
     your_name = forms.CharField(label='senin adın......:', max_length=100)
     tarih = forms.DateField(label='senin tarihin...:', widget=forms.TextInput(attrs={ 'class':'datepicker' }))
     demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
@@ -100,32 +97,14 @@ class NameForm(forms.Form):
     #                    widget=forms.TextInput(attrs={ 'class':'myFunction' }))
     yparca_choice = forms.ChoiceField(label='Yedek parça choice ile ........:',
             widget=forms.Select, choices=json_choices)
-    yedek_parca = forms.ModelChoiceField(label='Yedek parça...:', queryset=yp_choice.objects.all())
+    yedek_parca = forms.ModelChoiceField(label='Yedek parça...:', queryset=yedek_parca.objects.none())
 
     def __init__(self, *args, **kwargs):
+        sel_alt = kwargs.pop("selected_alt")
+        print("initial içinden selected_alt", sel_alt)
         super(NameForm, self).__init__(*args, **kwargs)
-        print("initial içinden birinci merhaba....:")
-        print("gizliyi initial içinden gizli yaz ...:", self.fields['gizli'])
-        a = str(self.fields['gizli'])
-        print("aaaaa....haydi bre...", a)
-        if self.fields['gizli'] == "A":
-            print("initial içinden merhaba...", )
-            json_choices = [('--------','-----------'),]
-            self.fields['yparca_choice'] = forms.ChoiceField(choices=json_choices)
-            self.fields['gizli'].initial = "X"
-
-
-    #def __init__(self, *args, **kwargs):
-    #    self.request = kwargs.pop('request', None)
-    #    qs = yp_choice.objects.all()
-    #    print("qs...init in içinde..", qs)
-    #    super(NameForm, self).__init__(*args, **kwargs)
-    #    self.fields['yedek_parca'].queryset = qs
-
-
-
-
-    #deneme = forms.CharField(label='hadi ..:',  widget=forms.TextInput(attrs={ 'class':'myFunction' }))
+        self.fields['yedek_parca'].queryset = yedek_parca.objects.filter(alt_kategori=sel_alt)
+        print("queryset initial içinden..:", self.fields['yedek_parca'].queryset)
 
     def clean(self):
         cleaned_data = super(NameForm, self).clean()
@@ -158,12 +137,13 @@ class DemirbasForm(forms.Form):
     alt_kategori = forms.ModelChoiceField(label='Alt Kategori..:', queryset=alt_kategori.objects.all())
     modeli = forms.CharField(label='Modeli..:', max_length=100)
     durumu = forms.ChoiceField(label='Durumu........:', widget=forms.Select, choices=DURUM,)
+    kimin = forms.ChoiceField(label='Kimin........:', widget=forms.Select, choices=KIMIN,)
     garanti_varmi = forms.ChoiceField(label='Garanti Var Mı.:',  widget=forms.Select, choices=VARMI,)
     garanti_bitis = forms.DateField(label='Gar. Bitiş Tarihi...:', required=False,
                 widget=forms.TextInput(attrs={ 'class': 'datepicker'}))
     amts_kalanyil = forms.IntegerField(label='Kalan Amts Yılı...:', min_value=0)
-    bedeli = forms.CharField(label='Bedeli...:')
-    #bedeli = forms.CharField(label='Bedeli...:',widget=forms.TextInput(attrs={'type':'number'}))
+    bedeli = forms.CharField(label='Bedeli..(TL).:')
+    bedeli_int = forms.IntegerField(required=False,widget=forms.HiddenInput())
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
 
 
@@ -180,15 +160,17 @@ class DemirbasForm(forms.Form):
         cc_alt_kategori = cleaned_data.get("alt_kategori")
         cc_modeli = cleaned_data.get("modeli")
         cc_durumu = cleaned_data.get("durumu")
+        cc_kimin = cleaned_data.get("kimin")
         cc_garanti_varmi = cleaned_data.get("garanti_varmi")
         cc_garanti_bitis = cleaned_data.get("garanti_bitis")
         cc_amts_kalanyil = cleaned_data.get("amts_kalanyil")
         cc_bedeli = cleaned_data.get("bedeli")
+        cc_bedeli_int = cleaned_data.get("bedeli_int")
         cc_aciklama = cleaned_data.get("aciklama")
         print ("pk...önemli...:", cc_pk)
-        print (cc_adi, cc_proje, cc_bedeli, cc_garanti_varmi, cc_garanti_bitis)
+        print (cc_adi, cc_proje, cc_bedeli, cc_bedeli_int, cc_garanti_varmi, cc_garanti_bitis)
         try:
-            cc = int(cc_bedeli)
+            cc = int(cc_bedeli_int)
         except:
             raise forms.ValidationError(" lütfen proje bedeli alanına sayı giriniz.... ")
         #if cc_garanti_varmi and cc_garanti_bitis:
@@ -221,13 +203,24 @@ class DemirbasForm(forms.Form):
 
 
 class Demirbas_Ara_Form(forms.Form):
-    alan = forms.CharField(label='demirbaş adında arama..', widget=forms.Textarea(attrs={'cols': 30, 'rows': 1}),)
+    alan = forms.CharField(label='Demirbaş adında arama..', widget=forms.Textarea(attrs={'cols': 30, 'rows': 1}),)
+
 
 class Proje_SorForm(forms.Form):
-    hangi_proje = forms.ModelChoiceField(label='Proje seçin.......:', queryset=proje.objects.all())
-    def clean(self):
-        cleaned_data = super(Proje_SorForm, self).clean()
-        cc_hangi_proje = self.cleaned_data.get("hangi_proje")
+    hangi_proje = forms.ModelChoiceField(label='Proje seçin..........:', queryset=proje.objects.all())
+
+
+class Proje_Dem_SorForm(forms.Form):
+    hangi_proje = forms.ModelChoiceField(label='Proje seçin..........:', queryset=proje.objects.all())
+    hangi_dem = forms.ModelChoiceField(label='Demirbaş seçin.......:', queryset=demirbas.objects.all())
+    def __init__(self, *args, **kwargs):
+        proje_no = kwargs.pop("proje_no")
+        print("proje no init içinden...:", proje_no)
+        super(Proje_SorForm, self).__init__(*args, **kwargs)
+        self.fields['hangi_dem'].queryset = demirbas.objects.filter(proje=proje_no)
+
+
+
 
 
 
@@ -239,8 +232,6 @@ class HareketForm(forms.Form):
     sonraki_proj = forms.ModelChoiceField(label='Sonraki proje.......:', queryset=proje.objects.all())
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
     hidd_proje = forms.CharField(required=False, widget=forms.HiddenInput())
-
-
 
     def clean(self):
         cleaned_data = super(HareketForm, self).clean()
@@ -271,29 +262,36 @@ class Hareket_Ara_Form(forms.Form):
 class ArizaForm(forms.Form):
     pk_no = forms.IntegerField(required=False, widget=forms.HiddenInput())
     proje = forms.ModelChoiceField(label='Proje..:', queryset=proje.objects.all())
-    demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=dem_ariza.objects.all())
-    ariza_adi = forms.CharField(label='Arıza Adı..:', max_length=100)
+    demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
+    ariza_adi = forms.CharField(label='Arıza Tanımı..:', max_length=100)
     servis = forms.ModelChoiceField(label='Servis Adı..:', queryset=servis.objects.all())
-    yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yparca_ariza.objects.all(), required=False)
-    yedek_parca_2 = forms.ModelChoiceField(label='Yedek parça -2........:', queryset=yparca_ariza.objects.all(), required=False)
-    yedek_parca_3 = forms.ModelChoiceField(label='Yedek parça -3........:', queryset=yparca_ariza.objects.all(), required=False)
-    yedek_parca_4 = forms.ModelChoiceField(label='Yedek parça -4........:', queryset=yparca_ariza.objects.all(), required=False)
-    yedek_parca_5 = forms.ModelChoiceField(label='Yedek parça -5........:', queryset=yparca_ariza.objects.all(), required=False)
+    yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_2 = forms.ModelChoiceField(label='Yedek parça -2........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_3 = forms.ModelChoiceField(label='Yedek parça -3........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_4 = forms.ModelChoiceField(label='Yedek parça -4........:', queryset=yedek_parca.objects.all(), required=False)
+    yedek_parca_5 = forms.ModelChoiceField(label='Yedek parça -5........:', queryset=yedek_parca.objects.all(), required=False)
     kayit_acilis = forms.DateField(label='Kayıt açılış tarihi...:', required=True,
         widget=forms.TextInput(attrs={ 'class':'datepicker',})
         )
     kayit_kapanis = forms.DateField(label='Kayıt kapanış tarihi...:', required=True,
         widget=forms.TextInput(attrs={ 'class':'datepicker',})
         )
-    tutar = forms.IntegerField(label='Tutarı...:', min_value=0)
+    tutar = forms.CharField(label='Tutarı..(TL).:')
+    tutar_int = forms.IntegerField(required=False,widget=forms.HiddenInput())
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
-    def __init__(self, *args, **kwargs):
-        proje_no = kwargs.pop('proje_no', None)
-        print("proje no init te", proje_no)
-        super(ArizaForm, self).__init__(*args, **kwargs)
-        if proje_no:
-            self.fields['demirbas'].queryset = demirbas.objects.filter(proje=proje_no)
 
+    def __init__(self, *args, **kwargs):
+        proje_no = kwargs.pop("proje_no")
+        alt_kat = kwargs.pop("alt_kat")
+        print("proje no init içinden...:", proje_no)
+        print("demirbas - alt kategori... init içinden...:", alt_kat)
+        super(ArizaForm, self).__init__(*args, **kwargs)
+        self.fields['demirbas'].queryset = demirbas.objects.filter(proje=proje_no)
+        self.fields['yedek_parca_1'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
+        self.fields['yedek_parca_2'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
+        self.fields['yedek_parca_3'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
+        self.fields['yedek_parca_4'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
+        self.fields['yedek_parca_5'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
 
     def clean(self):
         cleaned_data = super(ArizaForm, self).clean()
@@ -307,35 +305,41 @@ class ArizaForm(forms.Form):
         cc_kayit_acilis = cleaned_data.get("kayit_acilis")
         cc_kayit_kapanis = cleaned_data.get("kayit_kapanis")
         cc_tutar = cleaned_data.get("tutar")
+        cc_tutar_int = cleaned_data.get("tutar_int")
         cc_aciklama = cleaned_data.get("aciklama")
-        print (cc_ariza_adi, cc_servis, cc_tutar, cc_aciklama,)
+        print (cc_ariza_adi, cc_servis, cc_tutar, cc_tutar_int, cc_aciklama,)
         print (cc_yedek_parca_1, cc_yedek_parca_2, cc_yedek_parca_3, cc_yedek_parca_4, cc_yedek_parca_5)
         print (cc_kayit_acilis, cc_kayit_kapanis)
 
-        if cc_yedek_parca_1 == "" :
-            if ( not(cc_yedek_parca_2 == "") or not(cc_yedek_parca_3 == "") or not(cc_yedek_parca_4 == "") or not(cc_yedek_parca_5 == "")):
+        if cc_yedek_parca_1 == None :
+            if ( not(cc_yedek_parca_2 == None) or not(cc_yedek_parca_3 == None) or not(cc_yedek_parca_4 == None) or not(cc_yedek_parca_5 == None)):
                 raise forms.ValidationError(
                     " yedek parçaları sıralı girmelisiniz .... "
                 )
-        if cc_yedek_parca_2 == "" :
-            if ( not(cc_yedek_parca_3 == "") or not(cc_yedek_parca_4 == "") or not(cc_yedek_parca_5 == "")):
+        if cc_yedek_parca_2 == None :
+            if ( not(cc_yedek_parca_3 == None) or not(cc_yedek_parca_4 == None) or not(cc_yedek_parca_5 == None)):
                 raise forms.ValidationError(
                     " yedek parçaları sıralı girmelisiniz .... "
                 )
-        if cc_yedek_parca_3 == "" :
-            if ( not(cc_yedek_parca_4 == "") or not(cc_yedek_parca_5 == "")):
+        if cc_yedek_parca_3 == None:
+            if ( not(cc_yedek_parca_4 == None) or not(cc_yedek_parca_5 == None)):
                 raise forms.ValidationError(
                     " yedek parçaları sıralı girmelisiniz .... "
                 )
-        if cc_yedek_parca_4 == "" :
-            if ( not(cc_yedek_parca_5 == "")):
+        if cc_yedek_parca_4 == None:
+            if ( not(cc_yedek_parca_5 == None)):
                 raise forms.ValidationError(
                     " yedek parçaları sıralı girmelisiniz .... "
                 )
         if (cc_kayit_acilis > cc_kayit_kapanis):
             raise forms.ValidationError(
-                "açılış tarihi kapanış tarihini geçemez....."
+                "açılış kapanış tarihleri hatalı....."
         )
+        try:
+            cc = int(cc_tutar_int)
+        except:
+            raise forms.ValidationError(" lütfen tutar alanına sayı giriniz.... ")
+
 
 
 class Ariza_Ara_Form(forms.Form):

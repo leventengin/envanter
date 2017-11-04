@@ -19,13 +19,25 @@ VARMI = (
 ('H', 'Hayır'),
 )
 
+KIMIN = (
+('Ş', 'Şirketin'),
+('M', 'Müşterinin'),
+)
+
+KULLANIM_DURUMU = (
+('K', 'Kullanımda'),
+('P', 'Pert oldu'),
+('V', 'Proje sonunda müşteriye verildi'),
+('D', 'Depoda'),
+)
+
 TIPI = (
 ('T', 'Taşıma'),
 ('D', 'Depoya Taşı'),
 ('P', 'Pert'),
 ('G', 'Depodan Taşı'),
 ('X', 'Pert İptal'),
-('Z', 'Proje Sonrası Verildi')
+('Z', 'Proje Sonrası Verildi'),
 )
 
 ILLER = (
@@ -133,12 +145,7 @@ class yparca_ariza(models.Model):
     def __str__(self):
         return(self.yparca_ariza)
 
-class dem_ariza(models.Model):
-    dem_ariza = models.CharField(max_length=200)
-    kullanici =  models.ForeignKey(User, on_delete=models.CASCADE)
-    alt_kategori = models.ForeignKey(alt_kategori, on_delete=models.CASCADE)
-    def __str__(self):
-        return(self.dem_ariza)
+
 
 class yparca_demirbas(models.Model):
     yparca_demirbas = models.CharField(max_length=200)
@@ -148,7 +155,7 @@ class yparca_demirbas(models.Model):
 
 
 class proje(models.Model):
-    proje_adi = models.TextField(max_length=200)
+    proje_adi = models.CharField(max_length=200)
     ili = models.CharField(max_length=3, choices=ILLER, default='ANK')
     musteri = models.ForeignKey(musteri, on_delete=models.PROTECT)
     sirket = models.ForeignKey(sirket, on_delete=models.PROTECT)
@@ -156,7 +163,6 @@ class proje(models.Model):
     fat_durumu = models.CharField(max_length=1, choices=FATURA_DURUMU)
     toplam_ucret = models.PositiveIntegerField()
     aciklama = models.TextField()
-    yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return(self.proje_adi)
 
@@ -172,15 +178,28 @@ class demirbas(models.Model):
     alt_kategori = models.ForeignKey(alt_kategori, on_delete=models.PROTECT)
     modeli = models.CharField(max_length=200)
     durum = models.CharField(max_length=1, choices=DURUM)
+    kullanim_durumu = models.CharField(max_length=1, choices=KULLANIM_DURUMU)
+    kimin = models.CharField(max_length=1, choices=KIMIN)
     gar_varmi = models.CharField(max_length=1, choices=VARMI, default='E')
     garanti_bitis = models.DateField(default="2000-01-01", blank=True)
     amts_kalanyil = models.PositiveIntegerField()
     env_bedeli = models.PositiveIntegerField()
     aciklama = models.TextField()
-    kullanici = models.CharField(max_length=100, default='admin')
+    kullanan =  models.ForeignKey(User, on_delete=models.CASCADE,)
+    #kullanici = models.CharField(max_length=100, default='admin')
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return(self.demirbasadi)
+
+
+
+class dem_ariza(models.Model):
+    dem_ariza = models.CharField(max_length=200)
+    idisi = models.ForeignKey(demirbas, on_delete=models.CASCADE)
+    kullanici =  models.ForeignKey(User, on_delete=models.CASCADE)
+    alt_kategori = models.ForeignKey(alt_kategori, on_delete=models.CASCADE)
+    def __str__(self):
+        return(self.dem_ariza)
 
 
 
@@ -191,7 +210,8 @@ class hareket(models.Model):
     mevcut_proj = models.ForeignKey(proje, related_name='current_project', on_delete=models.PROTECT)
     sonraki_proj = models.ForeignKey(proje, related_name='next_project', on_delete=models.PROTECT)
     aciklama = models.TextField()
-    kullanici = models.CharField(max_length=100, default='admin')
+    kullanan =  models.ForeignKey(User, on_delete=models.CASCADE,)
+    #kullanici = models.CharField(max_length=100, default='admin')
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return(self.demirbas_adi)
@@ -200,6 +220,7 @@ class hareket(models.Model):
 
 class ariza(models.Model):
     ariza_adi = models.CharField(max_length=200)
+    proje = models.ForeignKey(proje, on_delete=models.PROTECT)
     demirbas = models.ForeignKey(demirbas, on_delete=models.PROTECT)
     servis = models.ForeignKey(servis, on_delete=models.PROTECT)
     yedek_parca_1 = models.ForeignKey(yedek_parca, related_name='ilk_parca', on_delete=models.PROTECT, blank=True, null=True)
@@ -211,7 +232,8 @@ class ariza(models.Model):
     kayit_kapanis = models.DateField(default=date.today,)
     tutar = models.PositiveIntegerField()
     aciklama = models.TextField()
-    kullanici = models.CharField(max_length=100, default='admin')
+    kullanan =  models.ForeignKey(User, on_delete=models.CASCADE,)
+    #kullanici = models.CharField(max_length=100, default='admin')
     yaratildi = models.DateTimeField(default=datetime.now, blank=True)
     def __str__(self):
         return(self.ariza_adi)
