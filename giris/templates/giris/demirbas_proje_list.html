@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Demirbaş Listesi</h1>
+    <h3>Proje Bazında Demirbaş Listesi</h3>
 
     {% if demirbas_proje_list %}
     <ul>
@@ -10,7 +10,7 @@
       <li>
         <a href="{{demirbas.id}}/sil"><span class='glyphicon glyphicon-remove'></span></a>
         <a href="{{demirbas.id}}/guncelle"><span class='glyphicon glyphicon-pencil'></span></a>
-              &emsp;   ({{demirbas.id}})    <a href="{{demirbas.id}}">{{ demirbas.demirbasadi }}</a>
+              &emsp;   ({{demirbas.id}})    <a href="/giris/demirbas/{{demirbas.id}}">{{ demirbas.demirbasadi }}</a>
         <!--  <a href="{{marka.id}}">{{ marka.id }}</a> ({{marka.marka_adi}}) -->
       </li>
       {% endfor %}

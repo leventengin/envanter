@@ -13,15 +13,15 @@
   <p><strong>Yedek parça 3    :</strong> {{ ariza.yedek_parca_3 }}</p>
   <p><strong>Yedek parça 4    :</strong> {{ ariza.yedek_parca_4 }}</p>
   <p><strong>Yedek parça 5    :</strong> {{ ariza.yedek_parca_5 }}</p>
-  <p><strong>Kayıt açılış     :</strong> {{ ariza.yedek_parca_4 }}</p>
-  <p><strong>Kayıt kapanış    :</strong> {{ ariza.yedek_parca_5 }}</p>
-  <p><strong>Tutar            :</strong> {{ ariza.tutar }}</p>
+  <p><strong>Kayıt açılış     :</strong> {{ ariza.kayit_acilis|date:"d/m/Y" }}</p>
+  <p><strong>Kayıt kapanış    :</strong> {{ ariza.kayit_kapanis|date:"d/m/Y" }}</p>
+  <p><strong>Tutar            :</strong> {{ ariza.tutar|intcomma }}</p>
   <p><strong>Açıklama         :</strong> {{ ariza.aciklama }}</p>
-  <p><strong>Kullanıcı        :</strong> {{ ariza.kullanici }}</p>
+  <p><strong>Kullanıcı        :</strong> {{ ariza.kullanan }}</p>
   <p><strong>Yaratıldı        :</strong> {{ ariza.yaratildi }}</p>
   <p></p>
   <p></p>
   <p></p>
-  
+
 
 {% endblock %}

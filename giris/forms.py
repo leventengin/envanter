@@ -25,7 +25,7 @@ import datetime
 from datetime import date, datetime
 from django.template.loader import render_to_string
 import requests
-
+from rest_framework import routers, serializers, viewsets
 
 
 DURUM = (
@@ -52,7 +52,6 @@ KULLANIM_DURUMU = (
 
 TIPI = (
 ('T', 'Diğer Projeye Taşı'),
-('D', 'Depoya Taşı'),
 )
 
 ILLER = (
@@ -216,8 +215,9 @@ class Proje_Dem_SorForm(forms.Form):
     def __init__(self, *args, **kwargs):
         proje_no = kwargs.pop("proje_no")
         print("proje no init içinden...:", proje_no)
-        super(Proje_SorForm, self).__init__(*args, **kwargs)
-        self.fields['hangi_dem'].queryset = demirbas.objects.filter(proje=proje_no)
+        super(Proje_Dem_SorForm, self).__init__(*args, **kwargs)
+        obj = demirbas.objects.filter(proje=proje_no)
+        self.fields['hangi_dem'].queryset = obj.filter(kullanim_durumu="K")
 
 
 
@@ -228,7 +228,7 @@ class HareketForm(forms.Form):
     dem_id = forms.IntegerField(label='Demirbaş id....:', disabled=True, required=False )
     dem_adi = forms.CharField(label='Demirbaş adı....:', disabled=True, required=False)
     dem_proj = forms.CharField(label='Mevcut proje....:', disabled=True, required=False)
-    har_tipi = forms.ChoiceField(label='Hareket tipi........:', widget=forms.Select, choices=TIPI,)
+    #har_tipi = forms.ChoiceField(label='Hareket tipi........:', widget=forms.Select, choices=TIPI,)
     sonraki_proj = forms.ModelChoiceField(label='Sonraki proje.......:', queryset=proje.objects.all())
     aciklama = forms.CharField(label='Açıklama', widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}),)
     hidd_proje = forms.CharField(required=False, widget=forms.HiddenInput())
@@ -286,7 +286,8 @@ class ArizaForm(forms.Form):
         print("proje no init içinden...:", proje_no)
         print("demirbas - alt kategori... init içinden...:", alt_kat)
         super(ArizaForm, self).__init__(*args, **kwargs)
-        self.fields['demirbas'].queryset = demirbas.objects.filter(proje=proje_no)
+        obj = demirbas.objects.filter(proje=proje_no)
+        self.fields['demirbas'].queryset = obj.filter(kullanim_durumu="K")
         self.fields['yedek_parca_1'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
         self.fields['yedek_parca_2'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
         self.fields['yedek_parca_3'].queryset = yedek_parca.objects.filter(alt_kategori=alt_kat)
@@ -356,7 +357,7 @@ def ProjeForm(ModelForm):
             fields = '__all__'
             labels = { 'proje_adi': _('Proje Adı')}
             help_texts = { 'proje_adi': _('lüften proje adı giriniz..')}
-
+2017-11-30
 
 
 def MarkaForm(ModelForm):

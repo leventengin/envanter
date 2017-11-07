@@ -16,26 +16,28 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 
-    <script>
-      function formatNumber() {
-          alert("format number çalıştı...");
-          var deger = document.getElementById("id_tutar").value;
-          var b = parseInt(deger);
-          alert("deger"+deger);
-          alert("b"+b);
-          alert (isNaN(deger)+": a number");
-          if (isNaN(deger))
-              { alert("tutar alanına sayı girmelisiniz..."); }
-          else
-              { alert("sayı değeri girildiği için doğru.......");
-                sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-                document.getElementById("id_tutar").value = sonuc;
-                document.getElementById("id_tutar_int").value = b;
-              }
-          /* sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-          document.getElementById("id_bedeli").value = sonuc; */
-          }
-    </script>
+
+
+      <script>
+        function formatNumber() {
+            /*alert("format number çalıştı..."); */
+            var deger = document.getElementById("id_tutar").value;
+            var b = parseInt(deger);
+            /*alert("deger"+deger);
+            alert("b"+b);
+            alert (isNaN(deger)+": a number"); */
+            if (isNaN(deger))
+                { alert("bedeli alanına sayı girmelisiniz..."); }
+            else
+                { /*alert("sayı değeri girildiği için doğru......."); */
+                  sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  document.getElementById("id_tutar").value = sonuc;
+                  document.getElementById("id_tutar_int").value = b;
+                }
+            /* sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+            document.getElementById("id_bedeli").value = sonuc; */
+            }
+      </script>
 
 
 
@@ -165,14 +167,14 @@
   </script>
 
 
+<h4>  Masraf Giriş Formu  </h4>
 
-
-
+<p> </p> 
 
 
 <form  action="" method="post" novalidate>
         {% csrf_token %}
-        <table border="1" class="fkenar">
+        <table border="0" class="fkenar">
           {{ form }}
         </table>
         <input type="submit" value="gir" />

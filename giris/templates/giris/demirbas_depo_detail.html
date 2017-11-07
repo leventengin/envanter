@@ -4,9 +4,9 @@
 {% load humanize %}
 
 
-  <h3>Demirbas Sayfası</h3>
+  <h3>Depodaki demirbaş sayfası</h3>
 
-
+    {% for demirbas in demirbas_obj %}
       <table border="0">
           <tbody>
               <tr>
@@ -19,27 +19,27 @@
               </tr>
               <tr>
                   <td><b>Proje...........:</b></td>
-                  <td>  &emsp;      {{ demirbas.proje }}</td>
+                  <td>  &emsp;    {{ demirbas.proje }}</td>
               </tr>
               <tr>
                   <td><b>Marka............: </b></td>
-                  <td>   &emsp;       {{ demirbas.marka }}</td>
+                  <td>   &emsp;    {{ demirbas.marka }}</td>
               </tr>
               <tr>
                   <td><b>Bölüm.............: </b></td>
-                  <td>   &emsp;         {{ demirbas.bolum }}</td>
+                  <td>   &emsp;    {{ demirbas.bolum }}</td>
               </tr>
               <tr>
                   <td><b>Ekipman türü.........:  </b></td>
-                  <td>   &emsp;             {{ demirbas.ekipman_turu }}</td>
+                  <td>   &emsp;    {{ demirbas.ekipman_turu }}</td>
               </tr>
               <tr>
                   <td><b>Alt kategori.......: </b></td>
-                  <td>    &emsp;              {{ demirbas.alt_kategori }}</td>
+                  <td>    &emsp;    {{ demirbas.alt_kategori }}</td>
               </tr>
               <tr>
                   <td><b>Modeli..........: </b></td>
-                  <td>   &emsp;         {{ demirbas.modeli }}</td>
+                  <td>   &emsp;     {{ demirbas.modeli }}</td>
               </tr>
 
               <tr>
@@ -53,31 +53,31 @@
 
               <tr>
                   <td><b>Garanti var mı......: </b></td>
-                  <td>   &emsp;         {{ demirbas.gar_varmi }}</td>
+                  <td>   &emsp;         {{ demirbas_obj.gar_varmi }}</td>
               </tr>
               <tr>
                   <td><b>Garanti bitiş.......:  </b></td>
-                  <td>   &emsp;             {{ demirbas.garanti_bitis|date:"d/m/Y" }}</td>
+                  <td>   &emsp;      {{ demirbas.garanti_bitis|date:"d/m/Y" }}</td>
               </tr>
               <tr>
                   <td><b>Amts kalan yıl.....: </b></td>
-                  <td>    &emsp;              {{ demirbas.amts_kalanyil }}</td>
+                  <td>    &emsp;     {{ demirbas.amts_kalanyil }}</td>
               </tr>
               <tr>
                   <td><b>Envanter bedeli (TL): </b></td>
-                  <td>    &emsp;              {{ demirbas.env_bedeli|intcomma }}</td>
+                  <td>    &emsp;      {{ demirbas.env_bedeli|intcomma }}</td>
               </tr>
               <tr>
                   <td><b>Açıklama............:  </b></td>
-                  <td>   &emsp;             {{ demirbas.aciklama }}</td>
+                  <td>   &emsp;      {{ demirbas.aciklama }}</td>
               </tr>
               <tr>
                   <td><b>Kullanıcı...........: </b></td>
-                  <td>    &emsp;              {{ demirbas.kullanan }}</td>
+                  <td>    &emsp;     {{ demirbas.kullanan }}</td>
               </tr>
               <tr>
                   <td><b>Yaratıldı...........: </b></td>
-                  <td>   &emsp;         {{ demirbas.yaratildi|date:"d/m/Y" }}</td>
+                  <td>   &emsp;     {{ demirbas.yaratildi|date:"d/m/Y" }}</td>
               </tr>
               <tr>
           </tbody>
@@ -85,15 +85,9 @@
 
 
 
-
-
   <p> </p>
-  <a href="/giris/hareket/yarat/{{ demirbas.id }}"> Diğer projeye taşı. </a>
+  <a href="/giris/hareket/depodan_geri/{{ demirbas.id }}"> Depodan projeye aktar...... </a>
   <p> </p>
-  <a href="/giris/hareket/depoya/{{ demirbas.id }}"> Depoya kaldır...... </a>
-  <p> </p>
-  <a href="/giris/hareket/perteayir/{{ demirbas.id }}"> Perte ayır........... </a>
-  <p> </p>
-  <a href="/giris/hareket/devret/{{ demirbas.id }}"> Müşteriye devret.... </a>
+  {% endfor %}
 
 {% endblock %}

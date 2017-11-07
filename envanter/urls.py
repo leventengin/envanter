@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^giris/', include('giris.urls')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^report_builder/', include('report_builder.urls')),
     #url(r'^', admin.site.urls),
     #url(r'^$', giris.views.home, name='home'),
     #Add Django site authentication urls (for login, logout, password management)

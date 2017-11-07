@@ -8,6 +8,8 @@ from datetime import datetime, date
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from rest_framework import routers, serializers, viewsets
+
 
 
 DURUM = (
@@ -206,8 +208,8 @@ class dem_ariza(models.Model):
 class hareket(models.Model):
     demirbas_id = models.ForeignKey(demirbas, on_delete=models.PROTECT)
     demirbas_adi = models.CharField(max_length=100, default="demirbas")
-    har_tipi = models.CharField(max_length=1, choices=TIPI)
-    mevcut_proj = models.ForeignKey(proje, related_name='current_project', on_delete=models.PROTECT)
+    har_tipi = models.CharField(max_length=1, choices=TIPI, default="T")
+    mevcut_proj = models.ForeignKey(proje, null=True, related_name='current_project', on_delete=models.PROTECT)
     sonraki_proj = models.ForeignKey(proje, related_name='next_project', on_delete=models.PROTECT)
     aciklama = models.TextField()
     kullanan =  models.ForeignKey(User, on_delete=models.CASCADE,)

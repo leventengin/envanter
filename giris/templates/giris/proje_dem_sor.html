@@ -25,7 +25,8 @@
         /*alert("buraya kadar geldi ... ajax"+selected);*/
         console.log(selected);
         $.ajax({
-          url : "js/",
+          /*url : "js/",*/
+          url : "/giris/hareket/p_d_js/",
           type : "GET",
           dataType: "text",
           data : {
@@ -83,10 +84,14 @@
   </script>
 
 
-
+  <h4> Taşıma İşlemi İçin Demirbaş Seç </h4>
+  <p>  </p>
+  <p>  </p>
+  <p>  </p>
+  <p>  </p>  
   <form  action="" method="post" novalidate>
           {% csrf_token %}
-          <table border="1" class="fkenar">
+          <table border="0" class="fkenar">
             {{ form }}
           </table>
   </form>

@@ -19,16 +19,16 @@
 
   <script>
     function formatNumber() {
-        alert("format number çalıştı...");
+        /*alert("format number çalıştı..."); */
         var deger = document.getElementById("id_bedeli").value;
         var b = parseInt(deger);
-        alert("deger"+deger);
+        /*alert("deger"+deger);
         alert("b"+b);
-        alert (isNaN(deger)+": a number");
+        alert (isNaN(deger)+": a number"); */
         if (isNaN(deger))
             { alert("bedeli alanına sayı girmelisiniz..."); }
         else
-            { alert("sayı değeri girildiği için doğru.......");
+            { /*alert("sayı değeri girildiği için doğru......."); */
               sonuc = deger.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
               document.getElementById("id_bedeli").value = sonuc;
               document.getElementById("id_bedeli_int").value = b;

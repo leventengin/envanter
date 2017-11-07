@@ -12,7 +12,7 @@ from giris.models import marka, demirbas, kategori, proje, musteri, deneme_giris
 from giris.models import grup, sirket, ekipman_turu, servis, alt_kategori, yedek_parca, hareket, ariza
 from giris.forms import MarkaForm, DemirbasForm, KategoriForm, MusteriForm, ProjeForm, Demirbas_Ara_Form
 from giris.forms import GrupForm, SirketForm, Ekipman_turuForm, ServisForm, Alt_kategoriForm, Yedek_parcaForm
-from giris.forms import HareketForm, ArizaForm, Hareket_Ara_Form, Ariza_Ara_Form, Proje_SorForm
+from giris.forms import HareketForm, ArizaForm, Hareket_Ara_Form, Ariza_Ara_Form, Proje_SorForm, Proje_Dem_SorForm
 
 from django.core import serializers
 from django.utils.translation import ugettext_lazy as _
@@ -30,7 +30,7 @@ from django.http import JsonResponse
 import json
 from django.core import serializers
 from django.db.models import ProtectedError
-
+from rest_framework import routers, serializers, viewsets
 
 
 
@@ -216,7 +216,7 @@ def demirbas_yarat(request):
                 marka_id = dd_marka, ekipman_turu_id = dd_ekipman_turu, alt_kategori_id = dd_alt_kategori,
                 modeli = dd_modeli, durum = dd_durumu, kimin = dd_kimin,  gar_varmi = dd_garanti_varmi,
                 garanti_bitis = dd_garanti_bitis, amts_kalanyil = dd_amts_kalanyil, env_bedeli = dd_bedeli_int,
-                aciklama = dd_aciklama, kullanan = kullanan, yaratildi = yaratildi, kullanim_durumu = dd_kullanim_durumu)
+                aciklama = dd_aciklama, kullanan_id = kullanan, yaratildi = yaratildi, kullanim_durumu = dd_kullanim_durumu)
             kaydetme_obj.save()
             form = DemirbasForm()
             messages.success(request, 'Başarıyla kaydetti....')
@@ -239,7 +239,24 @@ def demirbas_yarat(request):
 @login_required
 def secili_proje(request, pk=None):
     demirbas_proje_list = demirbas.objects.filter(proje=pk)
-    return render(request, 'giris/demirbas_proje_list.html', {'form': form, 'demirbas_proje_list': demirbas_proje_list})
+    print("ilk şeçilen demirbaşlar...", demirbas_proje_list)
+    demirbas_proje_list = demirbas_proje_list.filter(kullanim_durumu="K")
+    print("seçilen demirbaşları listele bakalım...", demirbas_proje_list)
+    return render(request, 'giris/demirbas_proje_list.html', {'demirbas_proje_list': demirbas_proje_list})
+
+
+@login_required
+def depo_listesi(request, pk=None):
+    demirbas_depo_list = demirbas.objects.filter(kullanim_durumu="D")
+    print("depodaki demirbaşlar listele bakalım...", demirbas_depo_list)
+    return render(request, 'giris/demirbas_depo_list.html', {'demirbas_depo_list': demirbas_depo_list})
+
+
+@login_required
+def demirbas_depo_detail(request, pk=None):
+    demirbas_obj = demirbas.objects.filter(id=pk)
+    print("depodaki demirbaş ......", demirbas_obj)
+    return render(request, 'giris/demirbas_depo_detail.html', {'demirbas_obj': demirbas_obj})
 
 
 
@@ -304,13 +321,14 @@ def demirbas_guncelle(request, pk=None):
                                     alt_kategori_id = dd_alt_kategori,
                                     modeli = dd_modeli,
                                     durum = dd_durumu,
+                                    kullanim_durumu = "K",
                                     kimin = dd_kimin,
                                     gar_varmi = dd_garanti_varmi,
                                     garanti_bitis = dd_garanti_bitis,
                                     amts_kalanyil = dd_amts_kalanyil,
                                     env_bedeli = dd_bedeli_int,
                                     aciklama = dd_aciklama,
-                                    kullanan = kullanan,
+                                    kullanan_id = kullanan,
                                     yaratildi = yaratildi)
             kaydetme_obj.save()
             messages.success(request, 'Başarıyla güncelledi....')
@@ -452,7 +470,7 @@ def hareket_yarat(request, pk=None):
         if form.is_valid():
             dd_demirbas_id = obje.id
             dd_demirbas_adi = obje.demirbasadi
-            dd_har_tipi = request.POST.get('har_tipi', "")
+            #dd_har_tipi = request.POST.get('har_tipi', "")
             dd_mevcut_proj_id = obje.proje.id
             dd_mevcut_proj = obje.proje
             dd_sonraki_proj = request.POST.get('sonraki_proj', "")
@@ -461,7 +479,7 @@ def hareket_yarat(request, pk=None):
             yaratildi = datetime.now()
             print ("demirbas_id", dd_demirbas_id)
             print ("demirbas_adi", dd_demirbas_adi)
-            print ("har tipi", dd_har_tipi)
+            #print ("har tipi", dd_har_tipi)
             print ("mevcut_proj_id", dd_mevcut_proj_id)
             print ("sonraki_proj", dd_sonraki_proj)
             print ("aciklama", dd_aciklama)
@@ -479,7 +497,7 @@ def hareket_yarat(request, pk=None):
                         form.fields["dem_id"].initial = obje.id
                         form.fields["dem_adi"].initial = obje.demirbasadi
                         form.fields["dem_proj"].initial = obje.proje
-                        form.fields["har_tipi"].initial = dd_har_tipi
+                        #form.fields["har_tipi"].initial = dd_har_tipi
                         form.fields["sonraki_proj"].initial = dd_sonraki_proj
                         form.fields["aciklama"].initial = dd_aciklama
                         args = {'form': form, 'deneme_1': deneme_1, 'deneme_2': deneme_2, 'deneme_3': deneme_3, 'deneme_4': deneme_4 }
@@ -491,7 +509,7 @@ def hareket_yarat(request, pk=None):
 
             kaydetme_obj = hareket(demirbas_id_id = obje_demirbas.id,
                                    demirbas_adi = obje_demirbas.demirbasadi,
-                                   har_tipi = dd_har_tipi,
+                                   har_tipi = "T",
                                    mevcut_proj_id = dd_mevcut_proj_id,
                                    sonraki_proj_id = dd_sonraki_proj,
                                    aciklama = dd_aciklama,
@@ -507,6 +525,7 @@ def hareket_yarat(request, pk=None):
                                       alt_kategori_id = obje_demirbas.alt_kategori,
                                       modeli = obje_demirbas.modeli,
                                       durum = obje_demirbas.durum,
+                                      kullanim_durumu = "K",
                                       gar_varmi = obje_demirbas.gar_varmi,
                                       garanti_bitis = obje_demirbas.garanti_bitis,
                                       amts_kalanyil = obje_demirbas.amts_kalanyil,
@@ -539,6 +558,96 @@ def hareket_yarat(request, pk=None):
         form.fields["dem_proj"].initial = obje.proje
         args = {'form': form, 'deneme_1': deneme_1, 'deneme_2': deneme_2, 'deneme_3': deneme_3, 'deneme_4': deneme_4}
         return render(request, 'giris/hareket_yarat.html', args)
+
+
+
+
+@login_required
+def depodan_geri(request, pk=None):
+    obje = get_object_or_404(demirbas, pk=pk)
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = HareketForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            dd_demirbas_id = obje.id
+            dd_demirbas_adi = obje.demirbasadi
+            #dd_har_tipi = request.POST.get('har_tipi', "")
+            dd_mevcut_proj_id = obje.proje.id
+            dd_mevcut_proj = obje.proje
+            dd_sonraki_proj = request.POST.get('sonraki_proj', "")
+            dd_aciklama = request.POST.get('aciklama', "")
+            kullanan = request.user.id
+            yaratildi = datetime.now()
+            print ("demirbas_id", dd_demirbas_id)
+            print ("demirbas_adi", dd_demirbas_adi)
+            #print ("har tipi", dd_har_tipi)
+            print ("mevcut_proj_id", dd_mevcut_proj_id)
+            print ("sonraki_proj", dd_sonraki_proj)
+            print ("aciklama", dd_aciklama)
+            print ("kullanan", kullanan)
+            print ("yaratildi", yaratildi)
+
+
+            obje_demirbas = get_object_or_404(demirbas, pk=pk)
+
+
+            kaydetme_obj = hareket(demirbas_id_id = obje_demirbas.id,
+                                   demirbas_adi = obje_demirbas.demirbasadi,
+                                   har_tipi = "T",
+                                   mevcut_proj_id = dd_mevcut_proj_id,
+                                   sonraki_proj_id = dd_sonraki_proj,
+                                   aciklama = dd_aciklama,
+                                   kullanan_id = kullanan,
+                                   yaratildi = yaratildi,)
+            kaydetme_obj.save()
+            dem_kaydet_obj = demirbas(id=obje_demirbas.id,
+                                      demirbasadi = obje_demirbas.demirbasadi,
+                                      proje_id = dd_sonraki_proj,
+                                      bolum = obje_demirbas.bolum,
+                                      marka_id = obje_demirbas.marka,
+                                      ekipman_turu_id = obje_demirbas.ekipman_turu,
+                                      alt_kategori_id = obje_demirbas.alt_kategori,
+                                      modeli = obje_demirbas.modeli,
+                                      durum = obje_demirbas.durum,
+                                      kullanim_durumu = "K",
+                                      gar_varmi = obje_demirbas.gar_varmi,
+                                      garanti_bitis = obje_demirbas.garanti_bitis,
+                                      amts_kalanyil = obje_demirbas.amts_kalanyil,
+                                      env_bedeli = obje_demirbas.env_bedeli,
+                                      aciklama = obje_demirbas.aciklama,
+                                      kullanan = obje_demirbas.kullanan,
+                                      yaratildi = obje_demirbas.yaratildi,)
+
+            dem_kaydet_obj.save()
+            #text = form.cleaned_data["demirbasadi"]
+            form = HareketForm()
+            #args = {'form': form, 'text': text}
+            #return render(request, 'name.html', args)
+            messages.success(request, 'Başarıyla kaydetti....')
+            return redirect('proje_sor')
+        else:
+            return render(request, 'giris/hareket_yarat.html', {'form': form})
+    # if a GET (or any other method) we'll create a blank form
+    else:
+    # for GET ....form is intialized
+        print ("en başta pk yı doğru alıyor mu ???..", pk)
+        deneme_1 = obje.id
+        deneme_2 = obje.demirbasadi
+        deneme_3 = obje.proje
+        deneme_4 = ""
+        form = HareketForm()
+        form.fields["hidd_proje"].initial = obje.proje
+        form.fields["dem_id"].initial = obje.id
+        form.fields["dem_adi"].initial = obje.demirbasadi
+        form.fields["dem_proj"].initial = obje.proje
+        args = {'form': form, 'deneme_1': deneme_1, 'deneme_2': deneme_2, 'deneme_3': deneme_3, 'deneme_4': deneme_4}
+        return render(request, 'giris/hareket_yarat.html', args)
+
+
+
+
+
 
 
 
@@ -642,25 +751,6 @@ def hareket_ara(request):
 
 
 
-def proje__dem_js(request):
-    print("selam buraya geldik.... demirbas listesi")
-    print("User.id.....:", request.user.id)
-    response_data ={}
-    if request.method == 'GET':
-        selected = request.GET.get('selected', None)
-        print("selected...:", selected)
-        if selected != None:
-            request.session['proje_no'] = selected
-            request.session.modified = True
-            print("yetti artık....neden doğru yazmıyor...:", request.session['proje_no'])
-            form = Proje_Dem_SorForm(proje_no=selected)
-    print ("son nokta demirbas arıza listesi....", response_data)
-    return HttpResponse(response_data, content_type='application/json')
-
-
-
-
-
 
 
 
@@ -686,10 +776,29 @@ def proje_dem_sor(request):
             return render(request, 'giris/proje_dem_sor.html', {'form': form})
     # if a GET (or any other method) we'll create a blank form
     else:
-        proje_no = request.session.get('proje_sor')
+        proje_no = request.session.get('proje_no')
         form = Proje_Dem_SorForm(proje_no=proje_no)
         args = {'form': form, }
         return render(request, 'giris/proje_dem_sor.html', args)
+
+
+
+
+
+def deneme(request):
+    print("selam buraya geldik.... demirbas listesi")
+    print("User.id.....:", request.user.id)
+    response_data ={}
+    if request.method == 'GET':
+        selected = request.GET.get('selected', None)
+        print("selected...:", selected)
+        if selected != None:
+            request.session['proje_no'] = selected
+            request.session.modified = True
+            print("yetti artık....neden doğru yazmıyor...:", request.session['proje_no'])
+            form = Proje_Dem_SorForm(proje_no=selected)
+    print ("son nokta demirbas arıza listesi....", response_data)
+    return HttpResponse(response_data, content_type='application/json')
 
 
 
@@ -1336,17 +1445,18 @@ def dem_perteayir(request, pk=None):
 @login_required
 def dem_perteayir_kesin(request, pk=None):
     print("pert kesindeki pk:", pk)
-    object = get_object_or_404(servis, pk=pk)
+    object = get_object_or_404(demirbas, pk=pk)
     try:
         object.kullanim_durumu = "P"
+        #object.proje = None
         object.save()
     except ProtectedError:
         error_message = "bağlantılı veri var, protected error...!!"
         #return JsonResponse(error_message, safe=False)
         messages.success(request, 'Bağlantılı veri var, protected error .......')
-        return redirect('servis')
+        return redirect('proje_sor')
     messages.success(request, 'Demirbaş başarıyla pert edildi....')
-    return redirect('demirbas')
+    return redirect('proje_sor')
 
 
 
@@ -1365,19 +1475,49 @@ def dem_devret(request, pk=None):
 @login_required
 def dem_devret_kesin(request, pk=None):
     print("devret kesindeki pk:", pk)
-    object = get_object_or_404(servis, pk=pk)
+    object = get_object_or_404(demirbas, pk=pk)
     try:
-        object.kullanim_durumu = "D"
+        object.kullanim_durumu = "V"
+        #object.proje = None
         object.save()
 
     except ProtectedError:
         error_message = "bağlantılı veri var, protected error...!!"
         #return JsonResponse(error_message, safe=False)
         messages.success(request, 'Bağlantılı veri var, protected error .......')
-        return redirect('servis')
+        return redirect('proje_sor')
     messages.success(request, 'Demirbaş başarıyla devir edildi....')
-    return redirect('demirbas')
+    return redirect('proje_sor')
 
+
+@login_required
+def dem_depoya(request, pk=None):
+    print("depodaki pk:", pk)
+    object = get_object_or_404(demirbas, pk=pk)
+    depoya = object.demirbasadi
+    depoya_id = object.id
+    print("depoya ", depoya)
+    print("depoya_id", depoya_id)
+    args = {'depoya_id': depoya_id, 'depoya': depoya, 'pk': pk,}
+    return render(request, 'giris/depoya_soru.html', args)
+
+
+@login_required
+def dem_depoya_kesin(request, pk=None):
+    print("depoya kesindeki pk:", pk)
+    object = get_object_or_404(demirbas, pk=pk)
+    try:
+        object.kullanim_durumu = "D"
+        #object.proje = None
+        object.save()
+
+    except ProtectedError:
+        error_message = "bağlantılı veri var, protected error...!!"
+        #return JsonResponse(error_message, safe=False)
+        messages.success(request, 'Bağlantılı veri var, protected error .......')
+        return redirect('proje_sor')
+    messages.success(request, 'Demirbaş başarıyla depoya aktarıldı....')
+    return redirect('proje_sor')
 
 
 
@@ -1575,6 +1715,8 @@ class Yedek_parcaDelete(LoginRequiredMixin,DeleteView):
 class DemirbasListView(LoginRequiredMixin,generic.ListView):
     model = demirbas
     #paginate_by = 20
+    def get_queryset(self):
+        return demirbas.objects.filter(kullanim_durumu="K")
 
 class DemirbasDetailView(LoginRequiredMixin,generic.DetailView):
     model = demirbas

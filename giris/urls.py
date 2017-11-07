@@ -4,6 +4,8 @@ from django.views.generic import RedirectView
 from django.conf.urls import include, url
 from . import views
 from django.utils.translation import gettext as _
+from rest_framework import routers, serializers, viewsets
+
 
 
 urlpatterns = [
@@ -12,6 +14,7 @@ urlpatterns = [
     # demirbaş urlleri aşağıda....
     url(r'^demirbas/$', views.DemirbasListView.as_view(), name='demirbas'),
     url(r'^demirbas/(?P<pk>\d+)$', views.DemirbasDetailView.as_view(), name='demirbas-detail'),
+    url(r'^demirbas_depo/(?P<pk>\d+)$', views.demirbas_depo_detail, name='demirbas_depo_detail'),
     url(r'^demirbas/yarat/$', views.demirbas_yarat, name='demirbas_yarat'),
     url(r'^demirbas/(?P<pk>\d+)/guncelle/$', views.demirbas_guncelle, name='demirbas_guncelle'),
     url(r'^demirbas/(?P<pk>\d+)/sil/kesin/$', views.demirbas_sil_kesin, name='demirbas_sil_kesin'),
@@ -127,18 +130,21 @@ urlpatterns = [
 
     # hareket urlleri aşağıda....
     url(r'^hareket/$', views.HareketListView.as_view(), name='hareket'),
-    url(r'^hareket/yarat/js/$', views.proje_dem_js, name='proje_dem_js'),
     url(r'^hareket/(?P<pk>\d+)$', views.HareketDetailView.as_view(), name='hareket-detail'),
     url(r'^hareket/yarat/(?P<pk>\d+)$', views.hareket_yarat, name='hareket_yarat'),
+    url(r'^hareket/depodan_geri/(?P<pk>\d+)$', views.depodan_geri, name='depodan_geri'),
     url(r'^hareket/perteayir/(?P<pk>\d+)$', views.dem_perteayir, name='dem_perteayir'),
     url(r'^hareket/perteayir/(?P<pk>\d+)/kesin/$', views.dem_perteayir_kesin, name='dem_perteayir_kesin'),
     url(r'^hareket/devret/(?P<pk>\d+)$', views.dem_devret, name='dem_devret'),
     url(r'^hareket/devret/(?P<pk>\d+)/kesin/$', views.dem_devret_kesin, name='dem_devret_kesin'),
+    url(r'^hareket/depoya/(?P<pk>\d+)$', views.dem_depoya, name='dem_depoya'),
+    url(r'^hareket/depoya/(?P<pk>\d+)/kesin/$', views.dem_depoya_kesin, name='dem_depoya_kesin'),
     url(r'^hareket/(?P<pk>\d+)/guncelle/$', views.hareket_guncelle, name='hareket_guncelle'),
     url(r'^hareket/(?P<pk>\d+)/sil/$', views.hareket_sil, name='hareket_sil'),
     url(r'^hareket_ara$', views.hareket_ara, name='hareket_ara'),
-    url(r'^hareket/yarat/$', views.proje_dem_sor, name='proje_dem_sor'),
-
+    url(r'^hareket/proje_dem/$', views.proje_dem_sor, name='proje_dem_sor'),
+    url(r'^hareket/p_d_js/$', views.deneme, name='deneme'),
+    url(r'^depo/$', views.depo_listesi, name='depo_listesi'),
 
 
 

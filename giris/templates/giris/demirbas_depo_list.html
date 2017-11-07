@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h3>Demirbaş Depo Listesi</h3>
+
+    {% if demirbas_depo_list %}
+    <ul>
+
+      {% for demirbas in demirbas_depo_list %}
+      <li>
+      <!--  <a href="{{demirbas.id}}/sil"><span class='glyphicon glyphicon-remove'></span></a>
+        <a href="{{demirbas.id}}/guncelle"><span class='glyphicon glyphicon-pencil'></span></a>  -->
+        &emsp;   ({{demirbas.id}})  <a href="/giris/demirbas_depo/{{demirbas.id}}">{{ demirbas.demirbasadi }}</a>
+      </li>
+      {% endfor %}
+      <p> </p>
+
+    </ul>
+    {% else %}
+      <p>Kayıtlı demirbaş yok ....</p>
+      <p> </p>
+
+    {% endif %}
+
+{% endblock %}
