@@ -262,7 +262,11 @@ class Hareket_Ara_Form(forms.Form):
 class ArizaForm(forms.Form):
     pk_no = forms.IntegerField(required=False, widget=forms.HiddenInput())
     proje = forms.ModelChoiceField(label='Proje..:', queryset=proje.objects.all())
+    # pro_2 = forms.CharField(label='pro_2..:', max_length=100)
+    # proje_hid = forms.CharField(required=False, widget=forms.HiddenInput())
     demirbas = forms.ModelChoiceField(label='Demirbaş Adı..:', queryset=demirbas.objects.all())
+    # demirbas_hid = forms.CharField(required=False, widget=forms.HiddenInput())
+    # dem_2 = forms.CharField(label='dem_2..:', max_length=100)
     ariza_adi = forms.CharField(label='Arıza Tanımı..:', max_length=100)
     servis = forms.ModelChoiceField(label='Servis Adı..:', queryset=servis.objects.all())
     yedek_parca_1 = forms.ModelChoiceField(label='Yedek parça -1........:', queryset=yedek_parca.objects.all(), required=False)

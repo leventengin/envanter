@@ -68,6 +68,19 @@
     function prosecFunction() {
         var response = '';
         var selected = document.getElementById("id_proje").value;
+        var js_demirbas = document.getElementById("id_demirbas").value;
+        var js_ariza_adi = document.getElementById("id_ariza_adi").value;
+        var js_servis = document.getElementById("id_servis").value;
+        var js_yp1 = document.getElementById("id_yedek_parca_1").value;
+        var js_yp2 = document.getElementById("id_yedek_parca_2").value;
+        var js_yp3 = document.getElementById("id_yedek_parca_3").value;
+        var js_yp4 = document.getElementById("id_yedek_parca_4").value;
+        var js_yp5 = document.getElementById("id_yedek_parca_5").value;
+        var js_ka = document.getElementById("id_kayit_acilis").value;
+        var js_kk = document.getElementById("id_kayit_kapanis").value;
+        var js_tutar = document.getElementById("id_tutar_int").value;
+        var js_aciklama = document.getElementById("id_aciklama").value;
+
         console.log(selected);
         $.ajax({
           url : "demirbas_ariza_listesi/",
@@ -75,10 +88,24 @@
           dataType: "text",
           data : {
             'selected' : selected,
-              },
+            'js_demirbas' : js_demirbas,
+            'js_ariza_adi' : js_ariza_adi,
+            'js_servis' : js_servis,
+            'js_yp1' : js_yp1,
+            'js_yp2' : js_yp2,
+            'js_yp3' : js_yp3,
+            'js_yp4' : js_yp4,
+            'js_yp5' : js_yp5,
+            'js_ka' : js_ka,
+            'js_kk' : js_kk,
+            'js_tutar' : js_tutar,
+            'js_aciklama' : js_aciklama,
+          },
           success: function() {
-              /* alert("projeden demirbaş seçimi başarıyla çalıştı.."); */
+              /* alert("projeden demirbaş seçimi başarıyla çalıştı..");  */
+
               window.location.reload();
+
               },
           failure: function() {
               alert("hata var....veri aktarılamadı...");
@@ -93,6 +120,19 @@
     function demsecFunction() {
         var response = '';
         var selected = document.getElementById("id_demirbas").value;
+        var js_proje = document.getElementById("id_proje").value;
+        var js_ariza_adi = document.getElementById("id_ariza_adi").value;
+        var js_servis = document.getElementById("id_servis").value;
+        var js_yp1 = document.getElementById("id_yedek_parca_1").value;
+        var js_yp2 = document.getElementById("id_yedek_parca_2").value;
+        var js_yp3 = document.getElementById("id_yedek_parca_3").value;
+        var js_yp4 = document.getElementById("id_yedek_parca_4").value;
+        var js_yp5 = document.getElementById("id_yedek_parca_5").value;
+        var js_ka = document.getElementById("id_kayit_acilis").value;
+        var js_kk = document.getElementById("id_kayit_kapanis").value;
+        var js_tutar = document.getElementById("id_tutar_int").value;
+        var js_aciklama = document.getElementById("id_aciklama").value;
+
         console.log(selected);
         $.ajax({
           url : "yedekparca_ariza_listesi/",
@@ -100,7 +140,19 @@
           dataType: "text",
           data : {
             'selected' : selected,
-              },
+            'js_proje' : js_proje,
+            'js_ariza_adi' : js_ariza_adi,
+            'js_servis' : js_servis,
+            'js_yp1' : js_yp1,
+            'js_yp2' : js_yp2,
+            'js_yp3' : js_yp3,
+            'js_yp4' : js_yp4,
+            'js_yp5' : js_yp5,
+            'js_ka' : js_ka,
+            'js_kk' : js_kk,
+            'js_tutar' : js_tutar,
+            'js_aciklama' : js_aciklama,
+           },
           success: function() {
               /* alert("demirbaş içinden yedek parça seçimi başarılı...") */
               window.location.reload();
@@ -159,7 +211,7 @@
 
   <script>
       $(document).ready(function(){
-             $("#id_bedeli").change(function(){
+             $("#id_tutar").change(function(){
                   /*alert ( "hadi  şimdi...bedeli çalıştı...");*/
                   formatNumber();
              });   /*  change  kapanıyor ...  */
@@ -169,7 +221,7 @@
 
 <h4>  Masraf Giriş Formu  </h4>
 
-<p> </p> 
+<p> </p>
 
 
 <form  action="" method="post" novalidate>

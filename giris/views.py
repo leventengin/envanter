@@ -242,7 +242,8 @@ def secili_proje(request, pk=None):
     print("ilk şeçilen demirbaşlar...", demirbas_proje_list)
     demirbas_proje_list = demirbas_proje_list.filter(kullanim_durumu="K")
     print("seçilen demirbaşları listele bakalım...", demirbas_proje_list)
-    return render(request, 'giris/demirbas_proje_list.html', {'demirbas_proje_list': demirbas_proje_list})
+    request.session['secili_proje'] = pk
+    return render(request, 'giris/demirbas_proje_list.html', {'demirbas_proje_list': demirbas_proje_list,})
 
 
 @login_required
@@ -364,6 +365,118 @@ def demirbas_guncelle(request, pk=None):
         return render(request, 'giris/demirbas_yarat.html', args)
 
 
+
+
+
+@login_required
+def demirbas_p_guncelle(request, pk=None):
+    obje = get_object_or_404(demirbas, pk=pk)
+    print("guncelle", pk)
+    print(obje)
+    print(obje.proje)
+    print(obje.bolum)
+    print("...........")
+    print(request.user)
+    print(request.user.id)
+
+    if request.method == 'POST':
+        print("post  .....", pk)
+        form = DemirbasForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            dd_demirbasadi = request.POST.get('adi', "")
+            dd_proje = request.POST.get('proje', "")
+            dd_bolum = request.POST.get('bolum', "")
+            dd_marka = request.POST.get('marka', "")
+            dd_ekipman_turu = request.POST.get('ekipman_turu', "")
+            dd_alt_kategori = request.POST.get('alt_kategori', "")
+            dd_modeli = request.POST.get('modeli', "")
+            dd_durumu = request.POST.get('durumu', "")
+            dd_kimin = request.POST.get('kimin', "")
+            dd_garanti_varmi = request.POST.get('garanti_varmi', "")
+            dd_garanti_bitis = request.POST.get('garanti_bitis', "")
+            dd_amts_kalanyil = request.POST.get('amts_kalanyil', "")
+            dd_bedeli = request.POST.get('bedeli', "")
+            dd_bedeli_int = request.POST.get('bedeli_int', "")
+            dd_aciklama = request.POST.get('aciklama', "")
+            kullanan = request.user.id
+            yaratildi = datetime.now()
+            if dd_garanti_bitis == "":
+                dd_garanti_bitis = "2000-01-01"
+            print ("demirbasadi", dd_demirbasadi)
+            print ("proje", dd_proje)
+            print ("bölüm", dd_bolum)
+            print ("marka", dd_marka)
+            print ("ekipman_turu", dd_ekipman_turu)
+            print ("alt_kategori", dd_alt_kategori)
+            print ("modeli", dd_modeli)
+            print ("durumu", dd_durumu)
+            print ("kimin", dd_kimin)
+            print ("garanti_varmi", dd_garanti_varmi)
+            print ("garanti_bitis", dd_garanti_bitis)
+            print ("amts_kalanyil", dd_amts_kalanyil)
+            print ("bedeli", dd_bedeli)
+            print ("bedeli_int", dd_bedeli_int)
+            print ("aciklama", dd_aciklama)
+            print ("kullanan", kullanan)
+            print ("yaratildi", yaratildi)
+            #import pdb; pdb.set_trace()
+            kaydetme_obj = demirbas(id=pk,
+                                    demirbasadi = dd_demirbasadi,
+                                    proje_id = dd_proje,
+                                    bolum = dd_bolum,
+                                    marka_id = dd_marka,
+                                    ekipman_turu_id = dd_ekipman_turu,
+                                    alt_kategori_id = dd_alt_kategori,
+                                    modeli = dd_modeli,
+                                    durum = dd_durumu,
+                                    kullanim_durumu = "K",
+                                    kimin = dd_kimin,
+                                    gar_varmi = dd_garanti_varmi,
+                                    garanti_bitis = dd_garanti_bitis,
+                                    amts_kalanyil = dd_amts_kalanyil,
+                                    env_bedeli = dd_bedeli_int,
+                                    aciklama = dd_aciklama,
+                                    kullanan_id = kullanan,
+                                    yaratildi = yaratildi)
+            kaydetme_obj.save()
+            messages.success(request, 'Başarıyla güncelledi....')
+            secili_proje = request.session.get('secili_proje')
+            return redirect('/giris/demirbas/proje/'+secili_proje)
+            #return render(request, 'giris/demirbas/proje/'+secili_proje,)
+        else:
+            return render(request, 'giris/demirbas_yarat.html', {'form': form})
+
+
+    else:
+        print("get .....", pk)
+        print("obje.id...:", obje.id)
+        form = DemirbasForm()
+        form.fields["pk_no"].initial = obje.id
+        form.fields["adi"].initial = obje.demirbasadi
+        form.fields["proje"].initial = obje.proje
+        form.fields["bolum"].initial = obje.bolum
+        form.fields["marka"].initial = obje.marka
+        form.fields["ekipman_turu"].initial = obje.ekipman_turu
+        form.fields["alt_kategori"].initial = obje.alt_kategori
+        form.fields["modeli"].initial = obje.modeli
+        form.fields["durumu"].initial = obje.durum
+        form.fields["garanti_varmi"].initial = obje.gar_varmi
+        if obje.gar_varmi == "E":
+            form.fields["garanti_bitis"].initial = obje.garanti_bitis
+        else:
+            form.fields["garanti_bitis"].initial = ""
+        form.fields["amts_kalanyil"].initial = obje.amts_kalanyil
+        form.fields["bedeli"].initial = obje.env_bedeli
+        form.fields["bedeli_int"].initial = obje.env_bedeli
+        form.fields["aciklama"].initial = obje.aciklama
+
+        args = {'form': form,}
+        return render(request, 'giris/demirbas_yarat.html', args)
+
+
+
+
+
 @login_required
 def demirbas_sil(request, pk=None):
     print("demirbaş sildeki pk:", pk)
@@ -395,6 +508,44 @@ def demirbas_sil_kesin(request, pk=None):
         return JsonResponse(error_message)
     messages.success(request, 'Başarıyla silindi....')
     return redirect('demirbas')
+
+
+@login_required
+def demirbas_p_sil(request, pk=None):
+    print("demirbaş p sildeki pk:", pk)
+    object = get_object_or_404(demirbas, pk=pk)
+    sil_demirbas = object.demirbasadi
+    sil_id = object.id
+    har_obje = hareket.objects.filter(demirbas_id=object.id)
+    ar_obje = ariza.objects.filter(demirbas=object.id)
+    har_count = har_obje.count()
+    ar_count = ar_obje.count()
+    print(" hareket......", har_count)
+    print(" ariza.....", ar_count)
+    secili_proje = request.session.get('secili_proje')
+    args = {'secili_proje' : secili_proje}
+    if har_count != 0 or ar_count != 0:
+        return render(request, 'giris/demirbas_p_silemezsin.html', args)
+    print("sil_demirbas", sil_demirbas)
+    print("sil_id", sil_id)
+    args = {'sil_id': sil_id, 'sil_demirbas': sil_demirbas, 'pk': pk,}
+    return render(request, 'giris/demirbas_sil_soru.html', args)
+
+
+@login_required
+def demirbas_p_sil_kesin(request, pk=None):
+    print("demirbaş sil kesindeki pk:", pk)
+    object = get_object_or_404(demirbas, pk=pk)
+    try:
+        object.delete()
+    except ProtectedError:
+        error_message = "bağlantılı veri var,  silinemez...!!"
+        return JsonResponse(error_message)
+    messages.success(request, 'Başarıyla silindi....')
+    secili_proje = request.session.get('secili_proje')
+    return redirect('/giris/demirbas/proje/'+secili_proje)
+
+
 
 
 
@@ -513,7 +664,7 @@ def hareket_yarat(request, pk=None):
                                    mevcut_proj_id = dd_mevcut_proj_id,
                                    sonraki_proj_id = dd_sonraki_proj,
                                    aciklama = dd_aciklama,
-                                   kullanan = kullanan,
+                                   kullanan_id = kullanan,
                                    yaratildi = yaratildi,)
             kaydetme_obj.save()
             dem_kaydet_obj = demirbas(id=obje_demirbas.id,
@@ -540,7 +691,7 @@ def hareket_yarat(request, pk=None):
             #args = {'form': form, 'text': text}
             #return render(request, 'name.html', args)
             messages.success(request, 'Başarıyla kaydetti....')
-            return redirect('demirbas')
+            return redirect('proje_dem_sor')
         else:
             return render(request, 'giris/hareket_yarat.html', {'form': form})
     # if a GET (or any other method) we'll create a blank form
@@ -778,6 +929,7 @@ def proje_dem_sor(request):
     else:
         proje_no = request.session.get('proje_no')
         form = Proje_Dem_SorForm(proje_no=proje_no)
+        form.fields["hangi_proje"].initial = proje_no
         args = {'form': form, }
         return render(request, 'giris/proje_dem_sor.html', args)
 
@@ -873,7 +1025,7 @@ def ariza_yarat(request):
             print ("tutar", dd_tutar)
             print ("tutar_int", dd_tutar_int)
             print ("aciklama", dd_aciklama)
-            print ("kullanici", kullanici)
+            print ("kullanan", kullanan)
             print ("yaratildi", yaratildi)
 
             kaydetme_obj = ariza(ariza_adi = dd_ariza_adi,
@@ -887,9 +1039,23 @@ def ariza_yarat(request):
                                  yedek_parca_5_id = dd_yedek_parca_5,
                                  tutar = dd_tutar_int,
                                  aciklama = dd_aciklama,
-                                 kullanan = kullanan,
+                                 kullanan_id = kullanan,
                                  yaratildi = yaratildi)
             kaydetme_obj.save()
+            request.session['ab_proje_no'] = None
+            request.session['js_demirbas'] = None
+            request.session['alt_kat'] = None
+            request.session['js_ariza_adi'] = None
+            request.session['js_servis'] = None
+            request.session['js_yp1'] = None
+            request.session['js_yp2'] = None
+            request.session['js_yp3'] = None
+            request.session['js_yp4'] = None
+            request.session['js_yp5'] = None
+            request.session['js_ka'] = None
+            request.session['js_kk'] = None
+            request.session['js_tutar'] = None
+            request.session['js_aciklama'] = None
             form = ArizaForm(proje_no=None, alt_kat=None)
             messages.success(request, 'Başarıyla kaydetti....')
             return redirect('ariza_yarat')
@@ -903,10 +1069,36 @@ def ariza_yarat(request):
         #alt_kat = request.session['alt_kat']
         proje_no = request.session.get('ab_proje_no')
         alt_kat = request.session.get('alt_kat')
+        dem_no = request.session.get('js_demirbas')
+        ar_adi = request.session.get('js_ariza_adi')
+        servis = request.session.get('js_servis')
+        yp1 = request.session.get('js_yp1')
+        yp2 = request.session.get('js_yp2')
+        yp3 = request.session.get('js_yp3')
+        yp4 = request.session.get('js_yp4')
+        yp5 = request.session.get('js_yp5')
+        ka = request.session.get('js_ka')
+        kp = request.session.get('js_kk')
+        tut = request.session.get('js_tutar')
+        acik = request.session.get('js_aciklama')
         #print("bu da doğru değilse kafayı mı yiyeyim...:", request.session['ab_proje_no'])
         print("get işlemi form yaratırken arıza yarat...proje_no", proje_no)
         print("get işlemi form yaratırken arıza yarat...alt_kat", alt_kat)
         form = ArizaForm(proje_no=proje_no, alt_kat=alt_kat)
+        form.fields["proje"].initial = proje_no
+        form.fields["demirbas"].initial = dem_no
+        form.fields["ariza_adi"].initial = ar_adi
+        form.fields["servis"].initial = servis
+        form.fields["yedek_parca_1"].initial = yp1
+        form.fields["yedek_parca_2"].initial = yp2
+        form.fields["yedek_parca_3"].initial = yp3
+        form.fields["yedek_parca_4"].initial = yp4
+        form.fields["yedek_parca_5"].initial = yp5
+        form.fields["kayit_acilis"].initial = ka
+        form.fields["kayit_kapanis"].initial = kp
+        form.fields["tutar"].initial = tut
+        form.fields["aciklama"].initial = acik
+
         return render(request, 'giris/ariza_yarat.html', {'form': form})
 
 
@@ -961,7 +1153,7 @@ def ariza_guncelle(request, pk=None):
             print ("tutar", dd_tutar)
             print ("tutar_int", dd_tutar_int)
             print ("aciklama", dd_aciklama)
-            print ("kullanici", kullanici)
+            print ("kullanan", kullanan)
             print ("yaratildi", yaratildi)
             #import pdb; pdb.set_trace()
             kaydetme_obj = ariza(id=pk,
@@ -978,7 +1170,7 @@ def ariza_guncelle(request, pk=None):
                                 kayit_kapanis = dd_kapa,
                                 tutar = dd_tutar_int,
                                 aciklama = dd_aciklama,
-                                kullanan = kullanan,
+                                kullanan_id = kullanan,
                                 yaratildi = yaratildi)
             kaydetme_obj.save()
             messages.success(request, 'Başarıyla güncelledi....')
@@ -1068,61 +1260,113 @@ def demirbas_ariza_listesi(request):
     response_data ={}
     if request.method == 'GET':
         selected = request.GET.get('selected', None)
-        print("selected...:", selected)
+        js_demirbas = request.GET.get('js_demirbas', None)
+        js_ariza_adi = request.GET.get('js_ariza_adi', None)
+        js_servis = request.GET.get('js_servis', None)
+        js_yp1 = request.GET.get('js_yp1', None)
+        js_yp2 = request.GET.get('js_yp2', None)
+        js_yp3 = request.GET.get('js_yp3', None)
+        js_yp4 = request.GET.get('js_yp4', None)
+        js_yp5 = request.GET.get('js_yp5', None)
+        js_ka = request.GET.get('js_ka', None)
+        js_kk = request.GET.get('js_kk', None)
+        js_tutar = request.GET.get('js_tutar', None)
+        js_aciklama = request.GET.get('js_aciklama', None)
+        print("selected...:", selected, js_demirbas, js_ariza_adi, js_servis, js_yp1, js_yp2,)
         if selected != None:
             request.session['ab_proje_no'] = selected
             request.session['alt_kat'] = None
+            request.session['js_demirbas'] = js_demirbas
+            request.session['js_ariza_adi'] = js_ariza_adi
+            request.session['js_servis'] = js_servis
+            request.session['js_yp1'] = js_yp1
+            request.session['js_yp2'] = js_yp2
+            request.session['js_yp3'] = js_yp3
+            request.session['js_yp4'] = js_yp4
+            request.session['js_yp5'] = js_yp5
+            request.session['js_ka'] = js_ka
+            request.session['js_kk'] = js_kk
+            request.session['js_tutar'] = js_tutar
+            request.session['js_aciklama'] = js_aciklama
             request.session.modified = True
             print("yetti artık....neden doğru yazmıyor...:", request.session['ab_proje_no'])
-            form = ArizaForm(proje_no=selected, alt_kat=None)
+
     print ("son nokta demirbas arıza listesi....", response_data)
     return HttpResponse(response_data, content_type='application/json')
 
+
+
+
+
+
+
+
+
+
+
+
 def demirbas_ariza_listesi_g(request, pk=None):
-    print("selam buraya geldik.... demirbas arıza listesi -gggggg")
+    print("selam buraya geldik...ggggggggggggggggg. demirbas arıza listesi")
     print("User.id.....:", request.user.id)
     response_data ={}
     if request.method == 'GET':
         selected = request.GET.get('selected', None)
-        print("selected...:", selected)
+        js_demirbas = request.GET.get('js_demirbas', None)
+        js_ariza_adi = request.GET.get('js_ariza_adi', None)
+        js_servis = request.GET.get('js_servis', None)
+        js_yp1 = request.GET.get('js_yp1', None)
+        js_yp2 = request.GET.get('js_yp2', None)
+        js_yp3 = request.GET.get('js_yp3', None)
+        js_yp4 = request.GET.get('js_yp4', None)
+        js_yp5 = request.GET.get('js_yp5', None)
+        js_ka = request.GET.get('js_ka', None)
+        js_kk = request.GET.get('js_kk', None)
+        js_tutar = request.GET.get('js_tutar', None)
+        js_aciklama = request.GET.get('js_aciklama', None)
+        print("selected...:", selected, js_demirbas, js_ariza_adi, js_servis, js_yp1, js_yp2,)
         if selected != None:
             request.session['ab_proje_no'] = selected
             request.session['alt_kat'] = None
+            request.session['js_demirbas'] = js_demirbas
+            request.session['js_ariza_adi'] = js_ariza_adi
+            request.session['js_servis'] = js_servis
+            request.session['js_yp1'] = js_yp1
+            request.session['js_yp2'] = js_yp2
+            request.session['js_yp3'] = js_yp3
+            request.session['js_yp4'] = js_yp4
+            request.session['js_yp5'] = js_yp5
+            request.session['js_ka'] = js_ka
+            request.session['js_kk'] = js_kk
+            request.session['js_tutar'] = js_tutar
+            request.session['js_aciklama'] = js_aciklama
             request.session.modified = True
             print("yetti artık....neden doğru yazmıyor...:", request.session['ab_proje_no'])
             form = ArizaForm(proje_no=selected, alt_kat=None)
-    print ("son nokta demirbas arıza listesi..ggggg..", response_data)
+    print ("son nokta demirbas arıza listesi..ggggggg..", response_data)
     return HttpResponse(response_data, content_type='application/json')
-
 
 
 # arıza formunda seçili demirbaşın ilgili yedek parçalarına ulaşmak için
 # alt kategori üzerinden çalışan js ile entegre kod....
 
+
+
 def yedekparca_ariza_listesi(request):
     print("selam buraya geldik.... yedekparca_ariza_listesi")
-    if request.method == 'GET':
-        selected = request.GET.get('selected', None)
-        print("selected...:", selected)
-        if selected != None:
-            obj = demirbas.objects.get(id=selected)
-            obj_2 = obj.alt_kategori
-            selected_altkat = obj_2.id
-            print("selected_altkat", selected_altkat)
-            proje_no = request.session['ab_proje_no']
-            request.session['alt_kat'] = selected_altkat
-            request.session.modified = True
-            form = ArizaForm(proje_no=proje_no, alt_kat=selected_altkat)
-            print("sonca...demce....yedek parça listesi  sonu :",  )
-            #args = {'form': form,}
-    print ("son nokta  yedek parça arıza listesi ....", response_data)
-    return HttpResponse(response_data, content_type='application/json')
-
-def yedekparca_ariza_listesi_g(request, pk=None):
-    print("selam buraya geldik....ggggggg.. yedekparca_ariza_listesi")
     response_data = {}
     if request.method == 'GET':
         selected = request.GET.get('selected', None)
+        js_ariza_adi = request.GET.get('js_ariza_adi', None)
+        js_servis = request.GET.get('js_servis', None)
+        js_yp1 = request.GET.get('js_yp1', None)
+        js_yp2 = request.GET.get('js_yp2', None)
+        js_yp3 = request.GET.get('js_yp3', None)
+        js_yp4 = request.GET.get('js_yp4', None)
+        js_yp5 = request.GET.get('js_yp5', None)
+        js_ka = request.GET.get('js_ka', None)
+        js_kk = request.GET.get('js_kk', None)
+        js_tutar = request.GET.get('js_tutar', None)
+        js_aciklama = request.GET.get('js_aciklama', None)
         print("selected...:", selected)
         if selected != None:
             obj = demirbas.objects.get(id=selected)
@@ -1130,15 +1374,71 @@ def yedekparca_ariza_listesi_g(request, pk=None):
             selected_altkat = obj_2.id
             print("selected_altkat", selected_altkat)
             proje_no = request.session['ab_proje_no']
+            request.session['js_demirbas'] = selected
             request.session['alt_kat'] = selected_altkat
+            request.session['js_ariza_adi'] = js_ariza_adi
+            request.session['js_servis'] = js_servis
+            request.session['js_yp1'] = js_yp1
+            request.session['js_yp2'] = js_yp2
+            request.session['js_yp3'] = js_yp3
+            request.session['js_yp4'] = js_yp4
+            request.session['js_yp5'] = js_yp5
+            request.session['js_ka'] = js_ka
+            request.session['js_kk'] = js_kk
+            request.session['js_tutar'] = js_tutar
+            request.session['js_aciklama'] = js_aciklama
             request.session.modified = True
             form = ArizaForm(proje_no=proje_no, alt_kat=selected_altkat)
             print("sonca...demce....yedek parça listesi  sonu :",  )
             #args = {'form': form,}
-    print ("son nokta gggggggg yedek parça arıza listesi ....")
+    print ("son nokta  yedek parça arıza listesi ....",)
     return HttpResponse(response_data, content_type='application/json')
 
 
+
+
+def yedekparca_ariza_listesi_g(request, pk=None):
+    print("selam buraya geldik...gggggggggggggg. yedekparca_ariza_listesi")
+    response_data = {}
+    if request.method == 'GET':
+        selected = request.GET.get('selected', None)
+        js_ariza_adi = request.GET.get('js_ariza_adi', None)
+        js_servis = request.GET.get('js_servis', None)
+        js_yp1 = request.GET.get('js_yp1', None)
+        js_yp2 = request.GET.get('js_yp2', None)
+        js_yp3 = request.GET.get('js_yp3', None)
+        js_yp4 = request.GET.get('js_yp4', None)
+        js_yp5 = request.GET.get('js_yp5', None)
+        js_ka = request.GET.get('js_ka', None)
+        js_kk = request.GET.get('js_kk', None)
+        js_tutar = request.GET.get('js_tutar', None)
+        js_aciklama = request.GET.get('js_aciklama', None)
+        print("selected...:", selected)
+        if selected != None:
+            obj = demirbas.objects.get(id=selected)
+            obj_2 = obj.alt_kategori
+            selected_altkat = obj_2.id
+            print("selected_altkat", selected_altkat)
+            proje_no = request.session['ab_proje_no']
+            request.session['js_demirbas'] = selected
+            request.session['alt_kat'] = selected_altkat
+            request.session['js_ariza_adi'] = js_ariza_adi
+            request.session['js_servis'] = js_servis
+            request.session['js_yp1'] = js_yp1
+            request.session['js_yp2'] = js_yp2
+            request.session['js_yp3'] = js_yp3
+            request.session['js_yp4'] = js_yp4
+            request.session['js_yp5'] = js_yp5
+            request.session['js_ka'] = js_ka
+            request.session['js_kk'] = js_kk
+            request.session['js_tutar'] = js_tutar
+            request.session['js_aciklama'] = js_aciklama
+            request.session.modified = True
+            form = ArizaForm(proje_no=proje_no, alt_kat=selected_altkat)
+            print("sonca...demce....yedek parça listesi  sonu :",  )
+            #args = {'form': form,}
+    print ("son nokta  yedek parça arıza listesi .ggggggggggg...",)
+    return HttpResponse(response_data, content_type='application/json')
 
 
 
